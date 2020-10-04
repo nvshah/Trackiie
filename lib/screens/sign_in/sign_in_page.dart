@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../widgets/custom_raised_button.dart';
+
 class SignInPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -9,6 +11,8 @@ class SignInPage extends StatelessWidget {
           //shadow effect  //default value is 4.0
           elevation: 2.0),
       body: _buildContent(),
+      //shade-as we want
+      backgroundColor: Colors.grey[200],
     );
   }
 
@@ -30,13 +34,17 @@ class SignInPage extends StatelessWidget {
               fontStyle: FontStyle.italic,
             ),
           ),
-          //Trick- to give padding
+          // Trick- to give padding
           SizedBox(height: 8.0),
-          RaisedButton(
-            child: Text('Sign in with Google'),
-            onPressed: () {
-              print('button hitted');
-            },
+          //Google Sign-In button
+          CustomRaisedButton(
+            child: Text(
+              'Sign in with Google',
+              style: TextStyle(color: Colors.black87, fontSize: 15.0,),
+            ),
+            color: Colors.white,
+            borderRadius: 4.0,
+            onPressed: (){},
           ),
           // //Trick- to give padding
           // SizedBox(height: 8.0),
