@@ -5,25 +5,30 @@ class CustomRaisedButton extends StatelessWidget {
   final Color color;
   final double borderRadius;
   final VoidCallback onPressed;
+  final double height;
 
   CustomRaisedButton({
     this.child,
     this.color,
-    this.borderRadius,
+    this.borderRadius: 4.0,
     this.onPressed,
+    this.height = 50.0,
   });
 
   @override
   Widget build(BuildContext context) {
-    return RaisedButton(
-      child: child,
-      color: color,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(
-          Radius.circular(borderRadius),
+    return SizedBox(
+      height: height,
+      child: RaisedButton(
+        child: child,
+        color: color,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(
+            Radius.circular(borderRadius),
+          ),
         ),
+        onPressed: onPressed,
       ),
-      onPressed:onPressed,
     );
   }
 }
