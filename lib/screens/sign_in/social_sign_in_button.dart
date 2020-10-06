@@ -5,12 +5,15 @@ import '../../widgets/custom_raised_button.dart';
 class SocialSignInButton extends CustomRaisedButton {
   //Constructor a way to supply all the parameter
   SocialSignInButton({
-    @required String text,   //Otherwise text Widget will throw an error
+    @required String text, //Otherwise text Widget will throw an error
     Color color,
     Color textColor,
-    VoidCallback onPressed,    // We can pass null call back intentionally
-    @required String assetName,   // We required this else there will be error/warning
-  }) : super(
+    VoidCallback onPressed, // We can pass null call back intentionally
+    @required
+        String assetName, // We required this else there will be error/warning
+  })  : assert(text != null),
+        assert(assetName != null),
+        super(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
