@@ -28,10 +28,11 @@ class SocialSignInButton extends CustomRaisedButton {
                 ),
               ),
               //Hack - to make Text at Center
+              //inorder to centered our text widget we are adding image-dummy
               Opacity(
                 opacity: 0,
                 child: Image.asset(assetName),
-              ), //inorder to centered our text widget we are adding image-dummy
+              ),
             ],
           ),
           color: color,
