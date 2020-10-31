@@ -25,7 +25,8 @@ class _LandingPageState extends State<LandingPage> {
       _user = user;
     });
   }
-
+  
+  ///Check if currenlty user is signed in
   Future<void> _getCurrentUser() async{
     FirebaseUser user = await FirebaseAuth.instance.currentUser();
     setState(() {
