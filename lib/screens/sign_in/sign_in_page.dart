@@ -1,22 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 import './sign_in_button.dart';
 import './social_sign_in_button.dart';
+import '../../services/auth.dart';
 
 class SignInPage extends StatelessWidget {
+  final Function(User) onSignIn;
+  final AuthBase auth;
 
-  final Function(FirebaseUser) onSignIn;
-
-  SignInPage({@required this.onSignIn});
+  SignInPage({
+    @required this.onSignIn,
+    @required this.auth,
+  });
 
   Future<void> _signInAnonymously() async {
     //TODO: Sign In Anonymously
-    try{
-      final authResult = await FirebaseAuth.instance.signInAnonymously();
+    try {
+      final user = await auth.signInAnonymously();
       //print('${authResult.user.uid}');
-      onSignIn(authResult.user);
-    }catch (e){
+      onSignIn(user);
+    } catch (e) {
       print(e.toString());
     }
   }
@@ -60,26 +63,26 @@ class SignInPage extends StatelessWidget {
             assetName: "images/google-logo.png",
             textColor: Colors.black87,
             color: Colors.white,
-            onPressed: (){},
+            onPressed: () {},
           ),
-          SizedBox(height: 8.0),  // Trick- to give padding
+          SizedBox(height: 8.0), // Trick- to give padding
           //Facebook Sign-In button
           SocialSignInButton(
             text: "Sign in with Facebook",
             assetName: "images/facebook-logo.png",
             textColor: Colors.white,
             color: Color(0xFF334D92),
-            onPressed: (){},
+            onPressed: () {},
           ),
-          SizedBox(height: 8.0),  // Trick- to give padding
+          SizedBox(height: 8.0), // Trick- to give padding
           //Email Sign-In button
           SignInButton(
             text: "Sign in with Email",
             textColor: Colors.white,
             color: Colors.teal[700],
-            onPressed: (){},
+            onPressed: () {},
           ),
-          SizedBox(height: 8.0),  // Trick- to give padding
+          SizedBox(height: 8.0), // Trick- to give padding
           //OR text
           Text(
             "Or",

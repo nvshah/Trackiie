@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import './screens/landing_page.dart';
+import './services/auth.dart';
 
 void main() {
   runApp(MyApp());
@@ -16,7 +17,9 @@ class MyApp extends StatelessWidget {
         accentColor: Colors.pinkAccent,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: LandingPage(),
+      home: LandingPage(
+        auth: Auth(),
+      ),
     );
   }
 }
