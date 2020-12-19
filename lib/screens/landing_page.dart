@@ -22,9 +22,12 @@ class _LandingPageState extends State<LandingPage> {
   void initState() {
     super.initState();
     _getCurrentUser();
+    widget.auth.onAuthStateChanged.listen((user) {
+      print('user: ${user?.uid}');
+    });
   }
 
-  //Callback
+  //Callback - that update user after sign in completes or signout completes
   void _updateUser(User user) {
     //print('User -> ${user.uid}');
     setState(() {
@@ -42,14 +45,39 @@ class _LandingPageState extends State<LandingPage> {
 
   @override
   Widget build(BuildContext context) {
-    return _user == null
-        ? SignInPage(
-            onSignIn: _updateUser,
-            auth: widget.auth,
-          )
-        : HomePage(
+    return StreamBuilder<User>(
+      stream: widget.auth.onAuthStateChanged,
+      builder: (ctxt, snapshot) {
+        if (snapshot.hasData) {
+          User user = snapshot.data;
+          if (user == null) {
+            return SignInPage(
+              onSignIn: _updateUser,
+              auth: widget.auth,
+            );
+          }
+          return HomePage(
             onSignOut: () => _updateUser(null),
             auth: widget.auth,
           );
+        } else {
+          //Loading... For 1st time it may take a while while communicating with the firebase server
+          return Scaffold(
+            body: Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
+        }
+      },
+    );
+    // return _user == null
+    //     ? SignInPage(
+    //         onSignIn: _updateUser,
+    //         auth: widget.auth,
+    //       )
+    //     : HomePage(
+    //         onSignOut: () => _updateUser(null),
+    //         auth: widget.auth,
+    //       );
   }
 }
