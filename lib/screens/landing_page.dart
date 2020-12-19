@@ -4,7 +4,7 @@ import './sign_in/sign_in_page.dart';
 import './home_page.dart';
 import '../services/auth.dart';
 
-class LandingPage extends StatefulWidget {
+class LandingPage extends StatelessWidget {
   final AuthBase auth;
 
   LandingPage({
@@ -12,53 +12,19 @@ class LandingPage extends StatefulWidget {
   });
 
   @override
-  _LandingPageState createState() => _LandingPageState();
-}
-
-class _LandingPageState extends State<LandingPage> {
-  User _user;
-
-  @override
-  void initState() {
-    super.initState();
-    _getCurrentUser();
-    widget.auth.onAuthStateChanged.listen((user) {
-      print('user: ${user?.uid}');
-    });
-  }
-
-  //Callback - that update user after sign in completes or signout completes
-  void _updateUser(User user) {
-    //print('User -> ${user.uid}');
-    setState(() {
-      _user = user;
-    });
-  }
-
-  ///Check if currenlty user is signed in
-  Future<void> _getCurrentUser() async {
-    User user = await widget.auth.currentUser();
-    setState(() {
-      _user = user;
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
     return StreamBuilder<User>(
-      stream: widget.auth.onAuthStateChanged,
+      stream: auth.onAuthStateChanged,
       builder: (ctxt, snapshot) {
         if (snapshot.hasData) {
           User user = snapshot.data;
           if (user == null) {
             return SignInPage(
-              onSignIn: _updateUser,
-              auth: widget.auth,
+              auth: auth,
             );
           }
           return HomePage(
-            onSignOut: () => _updateUser(null),
-            auth: widget.auth,
+            auth: auth,
           );
         } else {
           //Loading... For 1st time it may take a while while communicating with the firebase server
