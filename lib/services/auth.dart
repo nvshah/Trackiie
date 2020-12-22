@@ -42,10 +42,10 @@ class Auth implements AuthBase {
   @override
   Future<User> signInViaGoogle() async {
     //Get Access Token from google first, that can be used later to get user from firebase
-    GoogleSignIn googleSignIn = GoogleSignIn();
-    GoogleSignInAccount googleAccount = await googleSignIn.signIn();
+    final googleSignIn = GoogleSignIn();
+    final googleAccount = await googleSignIn.signIn();
     if (googleAccount != null) {
-      GoogleSignInAuthentication googleAuth =
+      final googleAuth =
           await googleAccount.authentication;
       //access token from google
       if(googleAuth.idToken == null || googleAuth.accessToken == null){
@@ -70,6 +70,12 @@ class Auth implements AuthBase {
 
   @override
   Future<void> signOut() async {
+    //As we need to sign out frm google as well else it's access token will be retained
+    //and despite sign out from firebase, but having google access token Sign In will occur automatically
+    //becuase google sign out is not happen & so ...
+    final googleSignIn = GoogleSignIn();   // this instance can be shared out as class property but as it's expensive so its kept at method level
+    googleSignIn.signOut();     //Sign out current goole account
+
     await _firebaseAuth.signOut();
   }
 
