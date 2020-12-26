@@ -30,6 +30,16 @@ class SignInPage extends StatelessWidget {
       print(e.toString());
     }
   }
+  
+  Future<void> _signInWithFacebook() async {
+    //TODO: Sign In With facebook
+    try {
+      await auth.signInViaFacebook();
+      //print('${authResult.user.uid}');
+    } catch (e) {
+      print(e.toString());
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -79,7 +89,7 @@ class SignInPage extends StatelessWidget {
             assetName: "images/facebook-logo.png",
             textColor: Colors.white,
             color: Color(0xFF334D92),
-            onPressed: () {},
+            onPressed: _signInWithFacebook,
           ),
           SizedBox(height: 8.0), // Trick- to give padding
           //Email Sign-In button

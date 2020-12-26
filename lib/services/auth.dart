@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 ///Generice class, User, used to represent FirebaseUser at our side (local)
@@ -19,6 +20,7 @@ abstract class AuthBase {
   Future<void> signOut();
   Stream<User> get onAuthStateChanged;
   Future<User> signInViaGoogle();
+  Future<User> signInViaFacebook();
 }
 
 ///Provide Authentication related services
@@ -38,17 +40,16 @@ class Auth implements AuthBase {
     final authResult = await _firebaseAuth.signInAnonymously();
     return _userFromFirebaseUser(authResult.user);
   }
-  
+
   @override
   Future<User> signInViaGoogle() async {
     //Get Access Token from google first, that can be used later to get user from firebase
     final googleSignIn = GoogleSignIn();
     final googleAccount = await googleSignIn.signIn();
     if (googleAccount != null) {
-      final googleAuth =
-          await googleAccount.authentication;
+      final googleAuth = await googleAccount.authentication;
       //access token from google
-      if(googleAuth.idToken == null || googleAuth.accessToken == null){
+      if (googleAuth.idToken == null || googleAuth.accessToken == null) {
         throw PlatformException(
           code: 'ERROR_MISSING_GOOGLE_AUTH_TOKEN',
           message: 'Missing Google Auth Token',
@@ -62,9 +63,30 @@ class Auth implements AuthBase {
         ),
       );
       return _userFromFirebaseUser(authResult.user);
+    } else {
+      throw PlatformException(
+        code: 'ERROR_ABORTED_BY_USER',
+        message: 'Sign in aborted by user',
+      );
     }
-    else{
-      throw PlatformException(code: 'ERROR_ABORTED_BY_USER', message: 'Sign in aborted by user',);
+  }
+  
+  @override
+  Future<User> signInViaFacebook() async {
+    final facebookLogin = FacebookLogin();
+    final result =
+        await facebookLogin.loginWithPublishPermissions(['public_profile']);
+    if (result.accessToken != null) {
+      final authResult = await _firebaseAuth.signInWithCredential(
+        FacebookAuthProvider.getCredential(
+            accessToken: result.accessToken.token),
+      );
+      return _userFromFirebaseUser(authResult.user);
+    }else{
+      throw PlatformException(
+        code: 'ERROR_ABORTED_BY_USER',
+        message: 'Sign in aborted by user',
+      );
     }
   }
 
@@ -73,8 +95,12 @@ class Auth implements AuthBase {
     //As we need to sign out frm google as well else it's access token will be retained
     //and despite sign out from firebase, but having google access token Sign In will occur automatically
     //becuase google sign out is not happen & so ...
-    final googleSignIn = GoogleSignIn();   // this instance can be shared out as class property but as it's expensive so its kept at method level
-    googleSignIn.signOut();     //Sign out current goole account
+    final googleSignIn =
+        GoogleSignIn(); // this instance can be shared out as class property but as it's expensive so its kept at method level
+    googleSignIn.signOut(); //Sign out current goole account
+
+    final facebookSignIn = FacebookLogin();  
+    facebookSignIn.logOut();  // Log out from current fb accont
 
     await _firebaseAuth.signOut();
   }
