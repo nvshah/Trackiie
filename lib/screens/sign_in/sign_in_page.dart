@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:time_tracker/screens/sign_in/email_sign_in_page.dart';
 
 import './sign_in_button.dart';
 import './social_sign_in_button.dart';
@@ -30,7 +31,7 @@ class SignInPage extends StatelessWidget {
       print(e.toString());
     }
   }
-  
+
   Future<void> _signInWithFacebook() async {
     //TODO: Sign In With facebook
     try {
@@ -41,6 +42,17 @@ class SignInPage extends StatelessWidget {
     }
   }
 
+  void _signInWithEmail(BuildContext ctxt) {
+    Navigator.of(ctxt).push(
+      MaterialPageRoute<void>(
+        //fullscreendialog- value decides if new screen appear from bottom or slide from right in IOS apps
+        //     : For android its always coming up from bottom
+        fullscreenDialog: true,
+        builder: (_) => EmailSignInPage(),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,13 +60,13 @@ class SignInPage extends StatelessWidget {
           title: Text('Time Tracker'),
           //shadow effect  //default value is 4.0
           elevation: 2.0),
-      body: _buildContent(),
+      body: _buildContent(context),
       //shade-as we want
       backgroundColor: Colors.grey[200],
     );
   }
 
-  Widget _buildContent() {
+  Widget _buildContent(BuildContext context) {
     return Padding(
       padding: EdgeInsets.all(16.0),
       //color: Colors.yellow,
@@ -97,7 +109,7 @@ class SignInPage extends StatelessWidget {
             text: "Sign in with Email",
             textColor: Colors.white,
             color: Colors.teal[700],
-            onPressed: () {},
+            onPressed: () => _signInWithEmail(context),
           ),
           SizedBox(height: 8.0), // Trick- to give padding
           //OR text
