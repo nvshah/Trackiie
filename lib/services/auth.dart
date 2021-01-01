@@ -21,6 +21,8 @@ abstract class AuthBase {
   Stream<User> get onAuthStateChanged;
   Future<User> signInViaGoogle();
   Future<User> signInViaFacebook();
+  Future<User> createUserViaEmailAndPassword();
+  Future<User> signInViaEmailAndPassword();
 }
 
 ///Provide Authentication related services
@@ -70,7 +72,7 @@ class Auth implements AuthBase {
       );
     }
   }
-  
+
   @override
   Future<User> signInViaFacebook() async {
     final facebookLogin = FacebookLogin();
@@ -79,15 +81,40 @@ class Auth implements AuthBase {
     if (result.accessToken != null) {
       final authResult = await _firebaseAuth.signInWithCredential(
         FacebookAuthProvider.getCredential(
-            accessToken: result.accessToken.token),
+          accessToken: result.accessToken.token,
+        ),
       );
       return _userFromFirebaseUser(authResult.user);
-    }else{
+    } else {
       throw PlatformException(
         code: 'ERROR_ABORTED_BY_USER',
         message: 'Sign in aborted by user',
       );
     }
+  }
+
+  @override
+  Future<User> signInViaEmailAndPassword({
+    String email,
+    String password,
+  }) async {
+    final authResult = await _firebaseAuth.signInWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
+    return _userFromFirebaseUser(authResult.user);
+  }
+
+  @override
+  Future<User> createUserViaEmailAndPassword({
+    String email,
+    String password,
+  }) async {
+    final authResult = await _firebaseAuth.createUserWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
+    return _userFromFirebaseUser(authResult.user);
   }
 
   @override
@@ -99,8 +126,8 @@ class Auth implements AuthBase {
         GoogleSignIn(); // this instance can be shared out as class property but as it's expensive so its kept at method level
     googleSignIn.signOut(); //Sign out current goole account
 
-    final facebookSignIn = FacebookLogin();  
-    facebookSignIn.logOut();  // Log out from current fb accont
+    final facebookSignIn = FacebookLogin();
+    facebookSignIn.logOut(); // Log out from current fb accont
 
     await _firebaseAuth.signOut();
   }
