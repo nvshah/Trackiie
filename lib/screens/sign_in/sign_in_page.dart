@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:time_tracker/screens/sign_in/email_sign_in_page.dart';
 
-import './sign_in_button.dart';
-import './social_sign_in_button.dart';
+import 'package:time_tracker/screens/sign_in/email_sign_in_page.dart';
+import 'sign_in_buttons.dart';
 import '../../services/auth.dart';
 
 class SignInPage extends StatelessWidget {
