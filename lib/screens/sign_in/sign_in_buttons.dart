@@ -2,6 +2,28 @@ import 'package:flutter/material.dart';
 
 import '../../widgets/custom_raised_button.dart';
 
+class SignInButton extends CustomRaisedButton {
+  //Constructor a way to supply all the parameter
+  SignInButton({
+    String text,
+    Color color,
+    Color textColor,
+    VoidCallback onPressed,
+  })  : assert(text != null),
+        super(
+          child: Text(
+            text,
+            style: TextStyle(
+              color: textColor,
+              fontSize: 15.0,
+            ),
+          ),
+          color: color,
+          //height: 40.0,
+          onPressed: onPressed,
+        );
+}
+
 class SocialSignInButton extends CustomRaisedButton {
   //Constructor a way to supply all the parameter
   SocialSignInButton({
@@ -37,6 +59,25 @@ class SocialSignInButton extends CustomRaisedButton {
           ),
           color: color,
           //height: 40.0,
+          onPressed: onPressed,
+        );
+}
+
+class FormSignInButton extends CustomRaisedButton {
+  final String text;
+  final VoidCallback onPressed;
+
+  FormSignInButton({
+    this.onPressed,
+    @required this.text,
+  }) : super(
+          child: Text(
+            text,
+            style: TextStyle(color: Colors.white, fontSize: 20.0),
+          ),
+          height: 44.0,
+          color: Colors.indigo,
+          borderRadius: 4.0,
           onPressed: onPressed,
         );
 }
