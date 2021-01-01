@@ -47,7 +47,9 @@ class SignInPage extends StatelessWidget {
         //fullscreendialog- value decides if new screen appear from bottom or slide from right in IOS apps
         //     : For android its always coming up from bottom
         fullscreenDialog: true,
-        builder: (_) => EmailSignInPage(),
+        builder: (_) => EmailSignInPage(
+          auth: auth,
+        ),
       ),
     );
   }

@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
+
 import 'package:time_tracker/screens/sign_in/email_sign_in_form.dart';
+import '../../services/auth.dart';
 
 class EmailSignInPage extends StatelessWidget {
+  final AuthBase auth;
+
+  EmailSignInPage({@required this.auth});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
