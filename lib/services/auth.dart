@@ -21,8 +21,8 @@ abstract class AuthBase {
   Stream<User> get onAuthStateChanged;
   Future<User> signInViaGoogle();
   Future<User> signInViaFacebook();
-  Future<User> createUserViaEmailAndPassword();
-  Future<User> signInViaEmailAndPassword();
+  Future<User> createUserViaEmailAndPassword({String email, String password});
+  Future<User> signInViaEmailAndPassword({String email, String password});
 }
 
 ///Provide Authentication related services

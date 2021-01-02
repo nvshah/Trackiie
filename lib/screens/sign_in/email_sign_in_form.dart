@@ -23,7 +23,23 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
 
   EmailSignInFormType _formType = EmailSignInFormType.signin;
 
-  void _submit() {}
+  String get _email => _emailTextController.text;
+  String get _password => _passwordTextController.text;
+
+  //Submit Form details
+  void _submit() async {
+    try {
+      await ((_formType == EmailSignInFormType.signin)
+          ? widget.auth
+              .signInViaEmailAndPassword(email: _email, password: _password)
+          : widget.auth.createUserViaEmailAndPassword(
+              email: _email, password: _password));
+      //IF Sign In or Register is Succesfully done then dismiss the screen automatically
+      Navigator.of(context).pop();
+    } catch (e) {
+      print(e.toString());
+    }
+  }
 
   ///toggling form type between signin & register
   void _toogleFormType() {
@@ -66,7 +82,7 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
       const SizedBox(
         height: 8.0,
       ),
-      //SIGN BUTTON
+      //PRIMARY
       FormSignInButton(
         text: primaryText,
         onPressed: _submit,
@@ -74,7 +90,7 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
       const SizedBox(
         height: 8.0,
       ),
-      //REGISTER
+      //SECONDARY
       FlatButton(
         onPressed: _toogleFormType,
         child: Text(secondaryText),
