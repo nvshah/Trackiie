@@ -19,7 +19,9 @@ class EmailSignInPage extends StatelessWidget {
       body: Padding(
         padding: EdgeInsets.all(16.0),
         child: Card(
-          child: EmailSignInForm(),
+          child: EmailSignInForm(
+            auth: auth,
+          ),
         ),
       ),
       //shade-as we want
