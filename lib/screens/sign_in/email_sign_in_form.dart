@@ -20,6 +20,8 @@ class EmailSignInForm extends StatefulWidget {
 class _EmailSignInFormState extends State<EmailSignInForm> {
   final _emailTextController = TextEditingController();
   final _passwordTextController = TextEditingController();
+  final _emailFocusNode = FocusNode();
+  final _passwordFocusNode = FocusNode();
 
   EmailSignInFormType _formType = EmailSignInFormType.signin;
 
@@ -52,6 +54,38 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
     _passwordTextController.clear();
   }
 
+  Widget _buildEmailInputField() {
+    return TextField(
+      controller: _emailTextController,
+      decoration: InputDecoration(
+        labelText: 'Email',
+        hintText: 'test@xyz.com',
+      ),
+      autocorrect: false, //No suggestion for Email
+      keyboardType: TextInputType.emailAddress,
+      textInputAction: TextInputAction.next,
+      focusNode: _emailFocusNode,
+      //When we press enter or complete entering text& enter next button from keyboard
+      //Move focus to password field
+      onEditingComplete: () =>
+          FocusScope.of(context).requestFocus(_passwordFocusNode),
+    );
+  }
+
+  Widget _buildPasswordInputField() {
+    return TextField(
+      controller: _passwordTextController,
+      decoration: InputDecoration(
+        labelText: 'Password',
+      ),
+      obscureText: true,
+      focusNode: _passwordFocusNode,
+      textInputAction: TextInputAction.done,
+      onEditingComplete:
+          _submit, //Submit form once password field is completed on taking inputs
+    );
+  }
+
   List<Widget> _buildChildren() {
     final primaryText = _formType == EmailSignInFormType.signin
         ? 'Sign in'
@@ -61,24 +95,12 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
         : 'Have an account? SignIn';
     return [
       //EMAIL
-      TextField(
-        controller: _emailTextController,
-        decoration: InputDecoration(
-          labelText: 'Email',
-          hintText: 'test@xyz.com',
-        ),
-      ),
+      _buildEmailInputField(),
       const SizedBox(
         height: 8.0,
       ),
       //PASSWORD
-      TextField(
-        controller: _passwordTextController,
-        decoration: InputDecoration(
-          labelText: 'Password',
-        ),
-        obscureText: true,
-      ),
+      _buildPasswordInputField(),
       const SizedBox(
         height: 8.0,
       ),
