@@ -32,10 +32,15 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
   //We will show error only when user once submit the details.
   bool _submitted = false;
 
+  //Inorder to not send multiple request simultaneously one after another before response of earlier one arrives
+  //Disable form until response is retrieved from server/firebase
+  bool _loading = false;
+
   //Submit Form details
   void _submit() async {
     setState(() {
       _submitted = true;
+      _loading = true;
     });
     try {
       await ((_formType == EmailSignInFormType.signin)
@@ -47,6 +52,8 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
       Navigator.of(context).pop();
     } catch (e) {
       print(e.toString());
+    } finally {
+      _loading = false;
     }
   }
 
@@ -63,7 +70,17 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
     _passwordTextController.clear();
   }
 
+  ///after user press next or enter from keyboard then decide what to do next
+  void _emailEditingComplete() {
+    //When there is error and we press next/enter then stay on same field instead going next field
+    final newFocus = widget.emailValidator.isValid(_email)
+        ? _emailFocusNode
+        : _passwordFocusNode;
+    FocusScope.of(context).requestFocus(newFocus);
+  }
+
   Widget _buildEmailInputField() {
+    //submitted atleast once, then show error
     final showErrorText = _submitted && !widget.emailValidator.isValid(_email);
     return TextField(
       controller: _emailTextController,
@@ -71,6 +88,7 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
         labelText: 'Email',
         hintText: 'test@xyz.com',
         errorText: showErrorText ? widget.invalidEmailErrorText : null,
+        enabled: !_loading,
       ),
       autocorrect: false, //No suggestion for Email
       keyboardType: TextInputType.emailAddress,
@@ -78,13 +96,13 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
       focusNode: _emailFocusNode,
       //When we press enter or complete entering text& enter next button from keyboard
       //Move focus to password field
-      onEditingComplete: () =>
-          FocusScope.of(context).requestFocus(_passwordFocusNode),
+      onEditingComplete: () => _emailEditingComplete,
       onChanged: (_) => _updateState(),
     );
   }
 
   Widget _buildPasswordInputField() {
+    //submitted atleast once, then show error
     final showErrorText =
         _submitted && !widget.passwordValidator.isValid(_password);
     return TextField(
@@ -92,6 +110,7 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
       decoration: InputDecoration(
         labelText: 'Password',
         errorText: showErrorText ? widget.invalidPasswordErrorText : null,
+        enabled: !_loading,
       ),
       obscureText: true,
       focusNode: _passwordFocusNode,
@@ -109,9 +128,11 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
     final secondaryText = _formType == EmailSignInFormType.signin
         ? 'Need an account? Register'
         : 'Have an account? SignIn';
+
     //bool _submitEnabled = _email.isNotEmpty && _password.isNotEmpty;
     bool _submitEnabled = widget.emailValidator.isValid(_email) &&
-        widget.passwordValidator.isValid(_password);
+        widget.passwordValidator.isValid(_password) &&
+        !_loading;
 
     return [
       //EMAIL
@@ -134,9 +155,16 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
       ),
       //SECONDARY
       FlatButton(
-        onPressed: _toogleFormType,
+        onPressed: !_loading ? _toogleFormType : null,
         child: Text(secondaryText),
       ),
+      const SizedBox(
+        height: 8.0,
+      ),
+      if (_loading)
+        Center(
+          child: CircularProgressIndicator(),
+        ),
     ];
   }
 
