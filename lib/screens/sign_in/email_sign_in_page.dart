@@ -16,11 +16,14 @@ class EmailSignInPage extends StatelessWidget {
         //shadow effect  //default value is 4.0
         elevation: 2.0,
       ),
-      body: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Card(
-          child: EmailSignInForm(
-            auth: auth,
+      //Inorder to avoid overflow error due to different device sizes (i.e when soft keyboard popus out, etc...)
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.all(16.0),
+          child: Card(
+            child: EmailSignInForm(
+              auth: auth,
+            ),
           ),
         ),
       ),
