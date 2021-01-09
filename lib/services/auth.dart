@@ -124,10 +124,10 @@ class Auth implements AuthBase {
     //becuase google sign out is not happen & so ...
     final googleSignIn =
         GoogleSignIn(); // this instance can be shared out as class property but as it's expensive so its kept at method level
-    googleSignIn.signOut(); //Sign out current goole account
+    await googleSignIn.signOut(); //Sign out current goole account
 
     final facebookSignIn = FacebookLogin();
-    facebookSignIn.logOut(); // Log out from current fb accont
+    await facebookSignIn.logOut(); // Log out from current fb accont
 
     await _firebaseAuth.signOut();
   }
