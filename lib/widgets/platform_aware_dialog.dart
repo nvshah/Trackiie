@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -13,6 +15,20 @@ class PlatformAwareDialog extends PlatformWidget {
     @required this.content,
     @required this.defaultActionText,
   });
+
+  ///Show customise platform-aware alert dialog
+  Future<bool> show(BuildContext ctxt) async {
+    return Platform.isIOS
+        ? await showCupertinoDialog<bool>(
+            context: null,
+            builder: (_) => this,
+          )
+        : await showDialog<bool>(
+            context: null,
+            builder: (_) => this,
+            barrierDismissible: true, // when user tap outside, dismiss dialog
+          );
+  }
 
   @override
   Widget buildCupertinoWidget(BuildContext context) {

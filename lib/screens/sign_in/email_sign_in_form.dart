@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:time_tracker/screens/sign_in/sign_in_buttons.dart';
+import 'package:time_tracker/widgets/platform_aware_dialog.dart';
 import '../../services/auth.dart';
 import './utils/validators.dart';
 
@@ -51,7 +52,29 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
       //IF Sign In or Register is Succesfully done then dismiss the screen automatically
       Navigator.of(context).pop();
     } catch (e) {
-      print(e.toString());
+      //display alert dialog
+      PlatformAwareDialog(
+              title: 'Sign in failed',
+              content: e.toString(),
+              defaultActionText: 'OK')
+          .show(context);
+      //print(e.toString());
+      // if (Platform.isIOS) {
+      // } else {}
+      // showDialog(
+      //   context: context,
+      //   builder: (context) {
+      //     return AlertDialog(
+      //       title: Text('Sign in failed'),
+      //       content: Text(e.toString()),
+      //       actions: <Widget>[
+      //         FlatButton(
+      //             onPressed: () => Navigator.of(context).pop(),
+      //             child: Text('OK')),
+      //       ],
+      //     );
+      //   },
+      // );
     } finally {
       _loading = false;
     }
