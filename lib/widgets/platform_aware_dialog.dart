@@ -9,11 +9,13 @@ class PlatformAwareDialog extends PlatformWidget {
   final String title;
   final String content;
   final String defaultActionText;
+  final String cancelActionText;
 
   PlatformAwareDialog({
     @required this.title,
     @required this.content,
     @required this.defaultActionText,
+    this.cancelActionText,
   });
 
   ///Show customise platform-aware alert dialog
@@ -50,9 +52,14 @@ class PlatformAwareDialog extends PlatformWidget {
 
   List<Widget> _buildActions(BuildContext context) {
     return [
+      if (cancelActionText != null)
+        PlatformAlertDialogAction(
+          onPressed: () => Navigator.of(context).pop(false),
+          child: Text(cancelActionText),
+        ),
       PlatformAlertDialogAction(
-        onPressed: () => Navigator.of(context).pop(),
-        child: Text('OK'),
+        onPressed: () => Navigator.of(context).pop(true),
+        child: Text(defaultActionText),
       ),
     ];
   }
