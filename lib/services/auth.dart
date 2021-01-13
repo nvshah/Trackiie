@@ -25,6 +25,7 @@ abstract class AuthBase {
   Future<User> signInViaEmailAndPassword({String email, String password});
 }
 
+///Wrapper on top of firebase auth
 ///Provide Authentication related services
 ///Depenedency Injection - instead of Global Access
 class Auth implements AuthBase {
