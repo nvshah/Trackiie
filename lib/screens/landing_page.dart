@@ -1,18 +1,14 @@
 import 'package:flutter/material.dart';
 
+import 'package:time_tracker/services/auth_provider.dart';
 import './sign_in/sign_in_page.dart';
 import './home_page.dart';
 import '../services/auth.dart';
 
 class LandingPage extends StatelessWidget {
-  final AuthBase auth;
-
-  LandingPage({
-    @required this.auth,
-  });
-
   @override
   Widget build(BuildContext context) {
+    final auth = AuthProvider.of(context);
     return StreamBuilder<User>(
       stream: auth.onAuthStateChanged,
       builder: (ctxt, snapshot) {
@@ -20,13 +16,9 @@ class LandingPage extends StatelessWidget {
         if (snapshot.connectionState == ConnectionState.active) {
           User user = snapshot.data;
           if (user == null) {
-            return SignInPage(
-              auth: auth,
-            );
+            return SignInPage();
           }
-          return HomePage(
-            auth: auth,
-          );
+          return HomePage();
         } else {
           //Loading... For 1st time it may take a while while communicating with the firebase server
           return Scaffold(

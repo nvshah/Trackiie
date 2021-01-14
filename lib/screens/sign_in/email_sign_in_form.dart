@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 import 'package:time_tracker/screens/sign_in/sign_in_buttons.dart';
+import 'package:time_tracker/services/auth_provider.dart';
 import 'package:time_tracker/widgets/platform_aware_dialog.dart';
-import '../../services/auth.dart';
 import './utils/validators.dart';
 
 enum EmailSignInFormType {
@@ -11,10 +11,6 @@ enum EmailSignInFormType {
 }
 
 class EmailSignInForm extends StatefulWidget with EmailAndPasswordValidators {
-  final AuthBase auth;
-
-  EmailSignInForm({@required this.auth});
-
   @override
   _EmailSignInFormState createState() => _EmailSignInFormState();
 }
@@ -37,6 +33,14 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
   //Disable form until response is retrieved from server/firebase
   bool _loading = false;
 
+  //AuthBase auth;
+
+  @override
+  void initState() {
+    super.initState();
+    //auth = AuthProvider.of(context);
+  }
+
   //Submit Form details
   void _submit() async {
     setState(() {
@@ -44,10 +48,12 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
       _loading = true;
     });
     try {
+      //Inside Stateful widget we always have an access to 'context' anywhere
+      //inside stateless widget we need to pass around instead
+      final auth = AuthProvider.of(context);
       await ((_formType == EmailSignInFormType.signin)
-          ? widget.auth
-              .signInViaEmailAndPassword(email: _email, password: _password)
-          : widget.auth.createUserViaEmailAndPassword(
+          ? auth.signInViaEmailAndPassword(email: _email, password: _password)
+          : auth.createUserViaEmailAndPassword(
               email: _email, password: _password));
       //IF Sign In or Register is Succesfully done then dismiss the screen automatically
       Navigator.of(context).pop();

@@ -1,19 +1,13 @@
 import 'package:flutter/material.dart';
 
 import 'package:time_tracker/screens/sign_in/email_sign_in_page.dart';
+import 'package:time_tracker/services/auth_provider.dart';
 import 'sign_in_buttons.dart';
-import '../../services/auth.dart';
 
 class SignInPage extends StatelessWidget {
-  final AuthBase auth;
-
-  SignInPage({
-    @required this.auth,
-  });
-
-  Future<void> _signInAnonymously() async {
-    //TODO: Sign In Anonymously
+  Future<void> _signInAnonymously(BuildContext context) async {
     try {
+      final auth = AuthProvider.of(context);
       await auth.signInAnonymously();
       //print('${authResult.user.uid}');
     } catch (e) {
@@ -21,9 +15,9 @@ class SignInPage extends StatelessWidget {
     }
   }
 
-  Future<void> _signInWithGoogle() async {
-    //TODO: Sign In With Google
+  Future<void> _signInWithGoogle(BuildContext context) async {
     try {
+      final auth = AuthProvider.of(context);
       await auth.signInViaGoogle();
       //print('${authResult.user.uid}');
     } catch (e) {
@@ -31,9 +25,9 @@ class SignInPage extends StatelessWidget {
     }
   }
 
-  Future<void> _signInWithFacebook() async {
-    //TODO: Sign In With facebook
+  Future<void> _signInWithFacebook(BuildContext context) async {
     try {
+      final auth = AuthProvider.of(context);
       await auth.signInViaFacebook();
       //print('${authResult.user.uid}');
     } catch (e) {
@@ -47,9 +41,7 @@ class SignInPage extends StatelessWidget {
         //fullscreendialog- value decides if new screen appear from bottom or slide from right in IOS apps
         //     : For android its always coming up from bottom
         fullscreenDialog: true,
-        builder: (_) => EmailSignInPage(
-          auth: auth,
-        ),
+        builder: (_) => EmailSignInPage(),
       ),
     );
   }
@@ -93,7 +85,7 @@ class SignInPage extends StatelessWidget {
             assetName: "images/google-logo.png",
             textColor: Colors.black87,
             color: Colors.white,
-            onPressed: _signInWithGoogle,
+            onPressed: () => _signInWithGoogle(context),
           ),
           SizedBox(height: 8.0), // Trick- to give padding
           //Facebook Sign-In button
@@ -102,7 +94,7 @@ class SignInPage extends StatelessWidget {
             assetName: "images/facebook-logo.png",
             textColor: Colors.white,
             color: Color(0xFF334D92),
-            onPressed: _signInWithFacebook,
+            onPressed: () => _signInWithFacebook(context),
           ),
           SizedBox(height: 8.0), // Trick- to give padding
           //Email Sign-In button
@@ -128,7 +120,7 @@ class SignInPage extends StatelessWidget {
             text: "Go Anonymous",
             textColor: Colors.black,
             color: Colors.limeAccent[300],
-            onPressed: _signInAnonymously,
+            onPressed: () => _signInAnonymously(context),
           ),
           // //Trick- to give padding
           // SizedBox(height: 8.0),
