@@ -20,9 +20,7 @@ class MyApp extends StatelessWidget {
           accentColor: Colors.pinkAccent,
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
-        home: LandingPage(
-          auth: Auth(),
-        ),
+        home: LandingPage(),
       ),
     );
   }
