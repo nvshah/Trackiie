@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'package:time_tracker/screens/sign_in/sign_in_buttons.dart';
-import 'package:time_tracker/services/auth_provider.dart';
+import 'package:time_tracker/services/auth.dart';
 import 'package:time_tracker/widgets/platform_aware_dialog.dart';
 import './utils/validators.dart';
 
@@ -50,7 +51,7 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
     try {
       //Inside Stateful widget we always have an access to 'context' anywhere
       //inside stateless widget we need to pass around instead
-      final auth = AuthProvider.of(context);
+      final auth = Provider.of<AuthBase>(context);
       await ((_formType == EmailSignInFormType.signin)
           ? auth.signInViaEmailAndPassword(email: _email, password: _password)
           : auth.createUserViaEmailAndPassword(
