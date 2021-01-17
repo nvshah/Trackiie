@@ -3,15 +3,15 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import './platform_widget.dart';
+import 'platform_widget.dart';
 
-class PlatformAwareDialog extends PlatformWidget {
+class PlatformAlertDialog extends PlatformWidget {
   final String title;
   final String content;
   final String defaultActionText;
   final String cancelActionText;
 
-  PlatformAwareDialog({
+  PlatformAlertDialog({
     @required this.title,
     @required this.content,
     @required this.defaultActionText,
