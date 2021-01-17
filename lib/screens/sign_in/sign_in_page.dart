@@ -1,18 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import 'package:time_tracker/screens/sign_in/email_sign_in_page.dart';
 import 'package:time_tracker/services/auth.dart';
+import 'package:time_tracker/widgets/platform_exception_alert_dialog.dart';
 import 'sign_in_buttons.dart';
 
 class SignInPage extends StatelessWidget {
+  ///show alert dialog on some error
+  void _showSignInError(PlatformException exception, BuildContext context) {
+    //display error, unless signIn aborted by an user (checking error code)
+    if (exception.code != 'ERROR_ABORTED_BY_USER') {
+      PlatformExceptionAlertDialog(
+        title: 'Sign in failed',
+        exception: exception,
+      ).show(context);
+    }
+  }
+
   Future<void> _signInAnonymously(BuildContext context) async {
     try {
       final auth = Provider.of<AuthBase>(context);
       await auth.signInAnonymously();
       //print('${authResult.user.uid}');
-    } catch (e) {
-      print(e.toString());
+    } on PlatformException catch (e) {
+      _showSignInError(e, context);
     }
   }
 
@@ -21,8 +34,8 @@ class SignInPage extends StatelessWidget {
       final auth = Provider.of<AuthBase>(context);
       await auth.signInViaGoogle();
       //print('${authResult.user.uid}');
-    } catch (e) {
-      print(e.toString());
+    } on PlatformException catch (e) {
+      _showSignInError(e, context);
     }
   }
 
@@ -31,8 +44,8 @@ class SignInPage extends StatelessWidget {
       final auth = Provider.of<AuthBase>(context);
       await auth.signInViaFacebook();
       //print('${authResult.user.uid}');
-    } catch (e) {
-      print(e.toString());
+    } on PlatformException catch (e) {
+      _showSignInError(e, context);
     }
   }
 
