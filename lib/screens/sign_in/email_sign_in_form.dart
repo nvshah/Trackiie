@@ -104,8 +104,8 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
   void _emailEditingComplete() {
     //When there is error and we press next/enter then stay on same field instead going next field
     final newFocus = widget.emailValidator.isValid(_email)
-        ? _emailFocusNode
-        : _passwordFocusNode;
+        ? _passwordFocusNode
+        : _emailFocusNode;
     FocusScope.of(context).requestFocus(newFocus);
   }
 
