@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import 'package:time_tracker/screens/sign_in/sign_in_buttons.dart';
 import 'package:time_tracker/services/auth.dart';
-import 'package:time_tracker/widgets/platform_aware_dialog.dart';
+import 'package:time_tracker/widgets/platform_exception_alert_dialog.dart';
 import './utils/validators.dart';
 
 enum EmailSignInFormType {
@@ -58,13 +59,12 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
               email: _email, password: _password));
       //IF Sign In or Register is Succesfully done then dismiss the screen automatically
       Navigator.of(context).pop();
-    } catch (e) {
+    } on PlatformException catch (e) {
       //display alert dialog
-      PlatformAwareDialog(
-              title: 'Sign in failed',
-              content: e.toString(),
-              defaultActionText: 'OK')
-          .show(context);
+      PlatformExceptionAlertDialog(
+        title: 'Sign in failed',
+        exception: e,
+      ).show(context);
       //print(e.toString());
       // if (Platform.isIOS) {
       // } else {}
@@ -83,7 +83,9 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
       //   },
       // );
     } finally {
-      _loading = false;
+      setState(() {
+        _loading = false;
+      });
     }
   }
 
