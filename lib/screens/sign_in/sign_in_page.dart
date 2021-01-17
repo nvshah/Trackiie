@@ -7,7 +7,21 @@ import 'package:time_tracker/services/auth.dart';
 import 'package:time_tracker/widgets/platform_exception_alert_dialog.dart';
 import 'sign_in_buttons.dart';
 
-class SignInPage extends StatelessWidget {
+class SignInPage extends StatefulWidget {
+  @override
+  _SignInPageState createState() => _SignInPageState();
+}
+
+class _SignInPageState extends State<SignInPage> {
+  bool _isLoading = false;
+
+  ///toggles the value of current loading state
+  void _toggleLoading() {
+    setState(() {
+      _isLoading = !_isLoading;
+    });
+  }
+
   ///show alert dialog on some error
   void _showSignInError(PlatformException exception, BuildContext context) {
     //display error, unless signIn aborted by an user (checking error code)
@@ -21,31 +35,40 @@ class SignInPage extends StatelessWidget {
 
   Future<void> _signInAnonymously(BuildContext context) async {
     try {
+      _toggleLoading(); //show loading
       final auth = Provider.of<AuthBase>(context);
       await auth.signInAnonymously();
       //print('${authResult.user.uid}');
     } on PlatformException catch (e) {
       _showSignInError(e, context);
+    } finally {
+      _toggleLoading(); //remove loading
     }
   }
 
   Future<void> _signInWithGoogle(BuildContext context) async {
     try {
+      _toggleLoading(); //show loading
       final auth = Provider.of<AuthBase>(context);
       await auth.signInViaGoogle();
       //print('${authResult.user.uid}');
     } on PlatformException catch (e) {
       _showSignInError(e, context);
+    } finally {
+      _toggleLoading(); //remove loading
     }
   }
 
   Future<void> _signInWithFacebook(BuildContext context) async {
     try {
+      _toggleLoading(); //show loading
       final auth = Provider.of<AuthBase>(context);
       await auth.signInViaFacebook();
       //print('${authResult.user.uid}');
     } on PlatformException catch (e) {
       _showSignInError(e, context);
+    } finally {
+      _toggleLoading(); //remove loading
     }
   }
 
@@ -81,15 +104,10 @@ class SignInPage extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          //SIGN IN - label
-          Text(
-            'Sign In',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 32.0,
-              fontWeight: FontWeight.w600,
-              fontStyle: FontStyle.italic,
-            ),
+          //HEADER - Sign In Text or Loading Indicator
+          SizedBox(
+            height: 50.0,
+            child: _buildHeader(),
           ),
           // Trick- to give padding
           SizedBox(height: 48.0),
@@ -99,7 +117,7 @@ class SignInPage extends StatelessWidget {
             assetName: "images/google-logo.png",
             textColor: Colors.black87,
             color: Colors.white,
-            onPressed: () => _signInWithGoogle(context),
+            onPressed: _isLoading ? null : () => _signInWithGoogle(context),
           ),
           SizedBox(height: 8.0), // Trick- to give padding
           //Facebook Sign-In button
@@ -108,7 +126,7 @@ class SignInPage extends StatelessWidget {
             assetName: "images/facebook-logo.png",
             textColor: Colors.white,
             color: Color(0xFF334D92),
-            onPressed: () => _signInWithFacebook(context),
+            onPressed: _isLoading ? null : () => _signInWithFacebook(context),
           ),
           SizedBox(height: 8.0), // Trick- to give padding
           //Email Sign-In button
@@ -116,7 +134,7 @@ class SignInPage extends StatelessWidget {
             text: "Sign in with Email",
             textColor: Colors.white,
             color: Colors.teal[700],
-            onPressed: () => _signInWithEmail(context),
+            onPressed: _isLoading ? null : () => _signInWithEmail(context),
           ),
           SizedBox(height: 8.0), // Trick- to give padding
           //OR text
@@ -134,7 +152,7 @@ class SignInPage extends StatelessWidget {
             text: "Go Anonymous",
             textColor: Colors.black,
             color: Colors.limeAccent[300],
-            onPressed: () => _signInAnonymously(context),
+            onPressed: _isLoading ? null : () => _signInAnonymously(context),
           ),
           // //Trick- to give padding
           // SizedBox(height: 8.0),
@@ -145,6 +163,26 @@ class SignInPage extends StatelessWidget {
           //   ),
           // ),
         ],
+      ),
+    );
+  }
+
+  ///build header either text or loading indicator
+  Widget _buildHeader() {
+    if (_isLoading) {
+      //LOADING Indicator
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+    //SIGN IN - label
+    return Text(
+      'Sign In',
+      textAlign: TextAlign.center,
+      style: TextStyle(
+        fontSize: 32.0,
+        fontWeight: FontWeight.w600,
+        fontStyle: FontStyle.italic,
       ),
     );
   }
