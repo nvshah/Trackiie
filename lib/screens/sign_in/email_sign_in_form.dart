@@ -43,6 +43,15 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
     //auth = AuthProvider.of(context);
   }
 
+  @override
+  void dispose() {
+    _emailTextController.dispose();
+    _passwordTextController.dispose();
+    _emailFocusNode.dispose();
+    _passwordFocusNode.dispose();
+    super.dispose();
+  }
+
   //Submit Form details
   void _submit() async {
     setState(() {
