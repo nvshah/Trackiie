@@ -1,25 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:time_tracker/screens/sign_in/business_logic/signin_bloc.dart';
 
 import 'package:time_tracker/screens/sign_in/email_sign_in_page.dart';
 import 'package:time_tracker/services/auth.dart';
 import 'package:time_tracker/widgets/platform_exception_alert_dialog.dart';
 import 'sign_in_buttons.dart';
 
-class SignInPage extends StatefulWidget {
-  @override
-  _SignInPageState createState() => _SignInPageState();
-}
-
-class _SignInPageState extends State<SignInPage> {
-  bool _isLoading = false;
+class SignInPage extends StatelessWidget {
+  //TIP :- always create such kinda widget whenever you want bloc for spcific page
+  //here SignInBloc is always gona stick with SignInPage
+  //with this convention widget will be created with things it requires to be configured
+  static Widget create(BuildContext context) {
+    return Provider(
+      create: (_) => SignInBloc(),
+      child: SignInPage(),
+    );
+  }
 
   ///toggles the value of current loading state
-  void _toggleLoading() {
-    setState(() {
-      _isLoading = !_isLoading;
-    });
+  void _updateLoading(BuildContext ctxt, bool isLoading) {
+    final bloc = Provider.of<SignInBloc>(ctxt);
+    bloc.setIsLoading(isLoading);
   }
 
   ///show alert dialog on some error
@@ -35,40 +38,40 @@ class _SignInPageState extends State<SignInPage> {
 
   Future<void> _signInAnonymously(BuildContext context) async {
     try {
-      _toggleLoading(); //show loading
+      _updateLoading(context, true); //show loading
       final auth = Provider.of<AuthBase>(context);
       await auth.signInAnonymously();
       //print('${authResult.user.uid}');
     } on PlatformException catch (e) {
       _showSignInError(e, context);
     } finally {
-      _toggleLoading(); //remove loading
+      _updateLoading(context, false); //remove loading
     }
   }
 
   Future<void> _signInWithGoogle(BuildContext context) async {
     try {
-      _toggleLoading(); //show loading
+      _updateLoading(context, true); //show loading
       final auth = Provider.of<AuthBase>(context);
       await auth.signInViaGoogle();
       //print('${authResult.user.uid}');
     } on PlatformException catch (e) {
       _showSignInError(e, context);
     } finally {
-      _toggleLoading(); //remove loading
+      _updateLoading(context, false); //remove loading
     }
   }
 
   Future<void> _signInWithFacebook(BuildContext context) async {
     try {
-      _toggleLoading(); //show loading
+      _updateLoading(context, true); //show loading
       final auth = Provider.of<AuthBase>(context);
       await auth.signInViaFacebook();
       //print('${authResult.user.uid}');
     } on PlatformException catch (e) {
       _showSignInError(e, context);
     } finally {
-      _toggleLoading(); //remove loading
+      _updateLoading(context, false); //remove loading
     }
   }
 
@@ -85,18 +88,25 @@ class _SignInPageState extends State<SignInPage> {
 
   @override
   Widget build(BuildContext context) {
+    final signInBloc = Provider.of<SignInBloc>(context);
     return Scaffold(
       appBar: AppBar(
           title: Text('Time Tracker'),
           //shadow effect  //default value is 4.0
           elevation: 2.0),
-      body: _buildContent(context),
+      body: StreamBuilder<bool>(
+          stream: signInBloc.getLoadingStream,
+          //Tip : provide initialData if there is sensible initial value
+          initialData: false,
+          builder: (context, snapshot) {
+            return _buildContent(context, snapshot.data);
+          }),
       //shade-as we want
       backgroundColor: Colors.grey[200],
     );
   }
 
-  Widget _buildContent(BuildContext context) {
+  Widget _buildContent(BuildContext context, bool isLoading) {
     return Padding(
       padding: EdgeInsets.all(16.0),
       //color: Colors.yellow,
@@ -107,7 +117,7 @@ class _SignInPageState extends State<SignInPage> {
           //HEADER - Sign In Text or Loading Indicator
           SizedBox(
             height: 50.0,
-            child: _buildHeader(),
+            child: _buildHeader(isLoading),
           ),
           // Trick- to give padding
           SizedBox(height: 48.0),
@@ -117,7 +127,7 @@ class _SignInPageState extends State<SignInPage> {
             assetName: "images/google-logo.png",
             textColor: Colors.black87,
             color: Colors.white,
-            onPressed: _isLoading ? null : () => _signInWithGoogle(context),
+            onPressed: isLoading ? null : () => _signInWithGoogle(context),
           ),
           SizedBox(height: 8.0), // Trick- to give padding
           //Facebook Sign-In button
@@ -126,7 +136,7 @@ class _SignInPageState extends State<SignInPage> {
             assetName: "images/facebook-logo.png",
             textColor: Colors.white,
             color: Color(0xFF334D92),
-            onPressed: _isLoading ? null : () => _signInWithFacebook(context),
+            onPressed: isLoading ? null : () => _signInWithFacebook(context),
           ),
           SizedBox(height: 8.0), // Trick- to give padding
           //Email Sign-In button
@@ -134,7 +144,7 @@ class _SignInPageState extends State<SignInPage> {
             text: "Sign in with Email",
             textColor: Colors.white,
             color: Colors.teal[700],
-            onPressed: _isLoading ? null : () => _signInWithEmail(context),
+            onPressed: isLoading ? null : () => _signInWithEmail(context),
           ),
           SizedBox(height: 8.0), // Trick- to give padding
           //OR text
@@ -152,7 +162,7 @@ class _SignInPageState extends State<SignInPage> {
             text: "Go Anonymous",
             textColor: Colors.black,
             color: Colors.limeAccent[300],
-            onPressed: _isLoading ? null : () => _signInAnonymously(context),
+            onPressed: isLoading ? null : () => _signInAnonymously(context),
           ),
           // //Trick- to give padding
           // SizedBox(height: 8.0),
@@ -168,8 +178,8 @@ class _SignInPageState extends State<SignInPage> {
   }
 
   ///build header either text or loading indicator
-  Widget _buildHeader() {
-    if (_isLoading) {
+  Widget _buildHeader(bool isLoading) {
+    if (isLoading) {
       //LOADING Indicator
       return const Center(
         child: CircularProgressIndicator(),
