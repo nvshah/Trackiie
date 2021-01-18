@@ -6,6 +6,7 @@ class SignInBloc {
   ///get loading state stream
   Stream<bool> get getLoadingStream => _isLoadingController.stream;
 
+  ///close the underlying stream
   void dispose() {
     _isLoadingController.close();
   }

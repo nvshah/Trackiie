@@ -9,20 +9,25 @@ import 'package:time_tracker/widgets/platform_exception_alert_dialog.dart';
 import 'sign_in_buttons.dart';
 
 class SignInPage extends StatelessWidget {
+  final SignInBloc signInBloc;
+
+  SignInPage(this.signInBloc);
   //TIP :- always create such kinda widget whenever you want bloc for spcific page
   //here SignInBloc is always gona stick with SignInPage
   //with this convention widget will be created with things it requires to be configured
   static Widget create(BuildContext context) {
     return Provider(
       create: (_) => SignInBloc(),
-      child: SignInPage(),
+      dispose: (context, SignInBloc bloc) => bloc.dispose(),
+      child: Consumer<SignInBloc>(
+        builder: (context, bloc, _) => SignInPage(bloc),
+      ),
     );
   }
 
   ///toggles the value of current loading state
-  void _updateLoading(BuildContext ctxt, bool isLoading) {
-    final bloc = Provider.of<SignInBloc>(ctxt);
-    bloc.setIsLoading(isLoading);
+  void _updateLoading(bool isLoading) {
+    signInBloc.setIsLoading(isLoading);
   }
 
   ///show alert dialog on some error
@@ -38,40 +43,40 @@ class SignInPage extends StatelessWidget {
 
   Future<void> _signInAnonymously(BuildContext context) async {
     try {
-      _updateLoading(context, true); //show loading
+      _updateLoading(true); //show loading
       final auth = Provider.of<AuthBase>(context);
       await auth.signInAnonymously();
       //print('${authResult.user.uid}');
     } on PlatformException catch (e) {
       _showSignInError(e, context);
     } finally {
-      _updateLoading(context, false); //remove loading
+      _updateLoading(false); //remove loading
     }
   }
 
   Future<void> _signInWithGoogle(BuildContext context) async {
     try {
-      _updateLoading(context, true); //show loading
+      _updateLoading(true); //show loading
       final auth = Provider.of<AuthBase>(context);
       await auth.signInViaGoogle();
       //print('${authResult.user.uid}');
     } on PlatformException catch (e) {
       _showSignInError(e, context);
     } finally {
-      _updateLoading(context, false); //remove loading
+      _updateLoading(false); //remove loading
     }
   }
 
   Future<void> _signInWithFacebook(BuildContext context) async {
     try {
-      _updateLoading(context, true); //show loading
+      _updateLoading(true); //show loading
       final auth = Provider.of<AuthBase>(context);
       await auth.signInViaFacebook();
       //print('${authResult.user.uid}');
     } on PlatformException catch (e) {
       _showSignInError(e, context);
     } finally {
-      _updateLoading(context, false); //remove loading
+      _updateLoading(false); //remove loading
     }
   }
 
@@ -88,7 +93,6 @@ class SignInPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final signInBloc = Provider.of<SignInBloc>(context);
     return Scaffold(
       appBar: AppBar(
           title: Text('Time Tracker'),
