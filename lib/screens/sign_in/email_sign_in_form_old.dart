@@ -5,24 +5,10 @@ import 'package:provider/provider.dart';
 import 'package:time_tracker/screens/sign_in/sign_in_buttons.dart';
 import 'package:time_tracker/services/auth.dart';
 import 'package:time_tracker/widgets/platform_exception_alert_dialog.dart';
-import 'utils/validators.dart';
+import './utils/validators.dart';
 import 'package:time_tracker/screens/sign_in/models/email_sign_in_model.dart';
-import 'package:time_tracker/screens/sign_in/business_logic/email_signin_bloc.dart';
 
 class EmailSignInForm extends StatefulWidget with EmailAndPasswordValidators {
-  final EmailSignInBloc bloc;
-  EmailSignInForm(this.bloc);
-
-  static Widget create(BuildContext context) {
-    return Provider<EmailSignInBloc>(
-      create: (_) => EmailSignInBloc(auth: Provider.of<AuthBase>(context)),
-      dispose: (context, bloc) => bloc.close(),
-      child: Consumer(
-        builder: (ctxt, bloc, _) => EmailSignInForm(bloc),
-      ),
-    );
-  }
-
   @override
   _EmailSignInFormState createState() => _EmailSignInFormState();
 }
@@ -221,19 +207,14 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<EmailSignInModel>(
-        stream: widget.bloc.modelStream,
-        initialData: EmailSignInModel(),
-        builder: (context, snapshot) {
-          return Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              mainAxisSize: MainAxisSize.min,
-              children: _buildChildren(),
-            ),
-          );
-        });
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.min,
+        children: _buildChildren(),
+      ),
+    );
   }
 
   void _updateState() {

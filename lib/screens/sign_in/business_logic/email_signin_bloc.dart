@@ -6,7 +6,7 @@ import 'package:time_tracker/services/auth.dart';
 class EmailSignInBloc {
   final AuthBase auth;
 
-  EmailSignInBloc(this.auth);
+  EmailSignInBloc({this.auth});
 
   final StreamController<EmailSignInModel> _modelController =
       StreamController<EmailSignInModel>();
