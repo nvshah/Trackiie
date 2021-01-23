@@ -5,11 +5,10 @@ import 'package:provider/provider.dart';
 import 'package:time_tracker/screens/sign_in/sign_in_buttons.dart';
 import 'package:time_tracker/services/auth.dart';
 import 'package:time_tracker/widgets/platform_exception_alert_dialog.dart';
-import 'utils/validators.dart';
 import 'package:time_tracker/screens/sign_in/models/email_sign_in_model.dart';
 import 'package:time_tracker/screens/sign_in/business_logic/email_signin_bloc.dart';
 
-class EmailSignInForm extends StatefulWidget with EmailAndPasswordValidators {
+class EmailSignInForm extends StatefulWidget {
   final EmailSignInBloc bloc;
   EmailSignInForm(this.bloc);
 
@@ -32,8 +31,6 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
   final _passwordTextController = TextEditingController();
   final _emailFocusNode = FocusNode();
   final _passwordFocusNode = FocusNode();
-
-  EmailSignInFormType _formType = EmailSignInFormType.signin;
 
   @override
   void initState() {
@@ -78,22 +75,19 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
   ///after user press next or enter from keyboard then decide what to do next
   void _emailEditingComplete(EmailSignInModel model) {
     //When there is error and we press next/enter then stay on same field instead going next field
-    final newFocus = widget.emailValidator.isValid(model.email)
+    final newFocus = model.emailValidator.isValid(model.email)
         ? _passwordFocusNode
         : _emailFocusNode;
     FocusScope.of(context).requestFocus(newFocus);
   }
 
   Widget _buildEmailInputField(EmailSignInModel model) {
-    //submitted atleast once, then show error
-    final showErrorText =
-        model.isSubmitted && !widget.emailValidator.isValid(model.email);
     return TextField(
       controller: _emailTextController,
       decoration: InputDecoration(
         labelText: 'Email',
         hintText: 'test@xyz.com',
-        errorText: showErrorText ? widget.invalidEmailErrorText : null,
+        errorText: model.emailErrorText,
         enabled: !model.isLoading,
       ),
       autocorrect: false, //No suggestion for Email
@@ -108,14 +102,11 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
   }
 
   Widget _buildPasswordInputField(EmailSignInModel model) {
-    //submitted atleast once, then show error
-    final showErrorText =
-        model.isSubmitted && !widget.passwordValidator.isValid(model.password);
     return TextField(
       controller: _passwordTextController,
       decoration: InputDecoration(
         labelText: 'Password',
-        errorText: showErrorText ? widget.invalidPasswordErrorText : null,
+        errorText: model.passwordErrorText,
         enabled: !model.isLoading,
       ),
       obscureText: true,
@@ -128,18 +119,6 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
   }
 
   List<Widget> _buildChildren(EmailSignInModel model) {
-    final primaryText = _formType == EmailSignInFormType.signin
-        ? 'Sign in'
-        : 'Create an account';
-    final secondaryText = _formType == EmailSignInFormType.signin
-        ? 'Need an account? Register'
-        : 'Have an account? SignIn';
-
-    //bool _submitEnabled = _email.isNotEmpty && _password.isNotEmpty;
-    bool _submitEnabled = widget.emailValidator.isValid(model.email) &&
-        widget.passwordValidator.isValid(model.password) &&
-        !model.isLoading;
-
     return [
       //EMAIL
       _buildEmailInputField(model),
@@ -153,8 +132,8 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
       ),
       //PRIMARY
       FormSignInButton(
-        text: primaryText,
-        onPressed: _submitEnabled ? _submit : null,
+        text: model.primaryButtonText,
+        onPressed: model.canSubmit ? _submit : null,
       ),
       const SizedBox(
         height: 8.0,
@@ -162,7 +141,7 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
       //SECONDARY
       FlatButton(
         onPressed: !model.isLoading ? _toogleFormType : null,
-        child: Text(secondaryText),
+        child: Text(model.secondaryButtonText),
       ),
       const SizedBox(
         height: 8.0,
