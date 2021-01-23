@@ -15,7 +15,7 @@ class EmailSignInBloc {
   var _model = EmailSignInModel();
 
   ///Update current model
-  void updateWith({
+  void updateModelWith({
     String email,
     String password,
     EmailSignInFormType formType,
@@ -35,8 +35,8 @@ class EmailSignInBloc {
   }
 
   //Submit Form details
-  void submit() async {
-    updateWith(isLoading: true, isSubmitted: true);
+  Future<void> submit() async {
+    updateModelWith(isLoading: true, isSubmitted: true);
     try {
       await ((_model.formType == EmailSignInFormType.signin)
           ? auth.signInViaEmailAndPassword(
@@ -48,7 +48,7 @@ class EmailSignInBloc {
               password: _model.password,
             ));
     } catch (e) {} finally {
-      updateWith(isLoading: false);
+      updateModelWith(isLoading: false);
     }
   }
 
