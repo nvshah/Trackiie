@@ -47,9 +47,30 @@ class EmailSignInBloc {
               email: _model.email,
               password: _model.password,
             ));
-    } catch (e) {} finally {
+    } catch (e) {
+      //we need to update model only when sign in fails as if we succeed we're going to dismiss this page anyway
       updateModelWith(isLoading: false);
+      rethrow;
     }
+  }
+
+  void updateEmail(String email) => updateModelWith(email: email);
+  void updatePassword(String password) => updateModelWith(password: password);
+
+  void toogleFormType() {
+    final formType = _model.formType == EmailSignInFormType.signin
+        ? EmailSignInFormType.signup
+        : EmailSignInFormType.signin;
+    //Reset form data
+    //NOTE : We must sync val between TextEditingController & Model of bloc i.e
+    //       Every time we clear text we must also clear value in our model
+    updateModelWith(
+      email: '',
+      password: '',
+      isLoading: false,
+      isSubmitted: false,
+      formType: formType,
+    );
   }
 
   void close() {

@@ -35,9 +35,6 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
 
   EmailSignInFormType _formType = EmailSignInFormType.signin;
 
-  String get _email => _emailTextController.text;
-  String get _password => _passwordTextController.text;
-
   @override
   void initState() {
     super.initState();
@@ -69,19 +66,11 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
   }
 
   ///toggling form type between signin & register
-  void _toogleFormType(EmailSignInModel model) {
+  void _toogleFormType() {
     //Reset form data
     //NOTE : We must sync val between TextEditingController & Model of bloc i.e
     //       Every time we clear text we must also clear value in our model
-    widget.bloc.updateModelWith(
-      email: '',
-      password: '',
-      isLoading: false,
-      isSubmitted: false,
-      formType: _formType == EmailSignInFormType.signin
-          ? EmailSignInFormType.signup
-          : EmailSignInFormType.signin,
-    );
+    widget.bloc.toogleFormType();
     _emailTextController.clear();
     _passwordTextController.clear();
   }
@@ -114,7 +103,7 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
       //When we press enter or complete entering text& enter next button from keyboard
       //Move focus to password field
       onEditingComplete: () => _emailEditingComplete(model),
-      onChanged: (_) => widget.bloc.updateModelWith(email: _email),
+      onChanged: widget.bloc.updateEmail,
     );
   }
 
@@ -134,7 +123,7 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
       textInputAction: TextInputAction.done,
       onEditingComplete:
           _submit, //Submit form once password field is completed on taking inputs
-      onChanged: (_) => widget.bloc.updateModelWith(password: _password),
+      onChanged: widget.bloc.updatePassword,
     );
   }
 
@@ -172,7 +161,7 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
       ),
       //SECONDARY
       FlatButton(
-        onPressed: !model.isLoading ? () => _toogleFormType(model) : null,
+        onPressed: !model.isLoading ? _toogleFormType : null,
         child: Text(secondaryText),
       ),
       const SizedBox(
