@@ -27,6 +27,8 @@ class EmailSignInForm extends StatefulWidget {
 }
 
 class _EmailSignInFormState extends State<EmailSignInForm> {
+  //NOTE texteditingcontroller hilds the state so this formPage must be stateful widget
+  //(it cannot be converted to stateless widget as it's not pure widget. i.e it has side effects, Eg TextEditingController)
   final _emailTextController = TextEditingController();
   final _passwordTextController = TextEditingController();
   final _emailFocusNode = FocusNode();
@@ -97,7 +99,8 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
       //When we press enter or complete entering text& enter next button from keyboard
       //Move focus to password field
       onEditingComplete: () => _emailEditingComplete(model),
-      onChanged: widget.bloc.updateEmail,
+      onChanged: widget
+          .bloc.updateEmail, //Widget rebuild != Widget render (widget redrawn)
     );
   }
 
@@ -114,7 +117,8 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
       textInputAction: TextInputAction.done,
       onEditingComplete:
           _submit, //Submit form once password field is completed on taking inputs
-      onChanged: widget.bloc.updatePassword,
+      onChanged: widget.bloc
+          .updatePassword, //Widget rebuild != Widget render (widget redrawn)
     );
   }
 
