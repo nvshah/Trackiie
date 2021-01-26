@@ -10,8 +10,10 @@ import 'sign_in_buttons.dart';
 
 class SignInPage extends StatelessWidget {
   final SignInBloc signInBloc;
+  final bool isLoading;
 
-  SignInPage(this.signInBloc);
+  SignInPage({this.signInBloc, this.isLoading});
+
   //TIP :- always create such kinda widget whenever you want bloc for spcific page
   //here SignInBloc is always gona stick with SignInPage
   //with this convention widget will be created with things it requires to be configured
@@ -24,7 +26,8 @@ class SignInPage extends StatelessWidget {
           create: (_) => SignInBloc(
               auth: Provider.of<AuthBase>(context), isLoading: isLoading),
           child: Consumer<SignInBloc>(
-            builder: (context, bloc, _) => SignInPage(bloc),
+            builder: (context, bloc, _) =>
+                SignInPage(signInBloc: bloc, isLoading: isLoading.value),
           ),
         ),
       ),
@@ -87,16 +90,13 @@ class SignInPage extends StatelessWidget {
           title: Text('Time Tracker'),
           //shadow effect  //default value is 4.0
           elevation: 2.0),
-      body: _buildContent(
-        context: context,
-        isLoading: Provider.of<ValueNotifier<bool>>(context).value,
-      ),
+      body: _buildContent(context),
       //shade-as we want
       backgroundColor: Colors.grey[200],
     );
   }
 
-  Widget _buildContent({BuildContext context, bool isLoading}) {
+  Widget _buildContent(BuildContext context) {
     return Padding(
       padding: EdgeInsets.all(16.0),
       //color: Colors.yellow,
@@ -107,7 +107,7 @@ class SignInPage extends StatelessWidget {
           //HEADER - Sign In Text or Loading Indicator
           SizedBox(
             height: 50.0,
-            child: _buildHeader(isLoading),
+            child: _buildHeader(),
           ),
           // Trick- to give padding
           SizedBox(height: 48.0),
@@ -168,7 +168,7 @@ class SignInPage extends StatelessWidget {
   }
 
   ///build header either text or loading indicator
-  Widget _buildHeader(bool isLoading) {
+  Widget _buildHeader() {
     if (isLoading) {
       //LOADING Indicator
       return const Center(
