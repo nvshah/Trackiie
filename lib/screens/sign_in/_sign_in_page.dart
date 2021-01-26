@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:time_tracker/screens/sign_in/business_logic/signin_bloc.dart';
+import 'package:time_tracker/screens/sign_in/business_logic/_signin_bloc.dart';
 
 import 'package:time_tracker/screens/sign_in/email_sign_in_page.dart';
 import 'package:time_tracker/services/auth.dart';
@@ -16,17 +16,11 @@ class SignInPage extends StatelessWidget {
   //here SignInBloc is always gona stick with SignInPage
   //with this convention widget will be created with things it requires to be configured
   static Widget create(BuildContext context) {
-    return ChangeNotifierProvider<ValueNotifier<bool>>(
-      create: (_) => ValueNotifier<bool>(false),
-      child: Consumer<ValueNotifier<bool>>(
-        //this builder is called every time when isLoading.value changes i.e all descendents widgets are also rebuilt
-        builder: (_, isLoading, __) => Provider(
-          create: (_) => SignInBloc(
-              auth: Provider.of<AuthBase>(context), isLoading: isLoading),
-          child: Consumer<SignInBloc>(
-            builder: (context, bloc, _) => SignInPage(bloc),
-          ),
-        ),
+    return Provider(
+      create: (_) => SignInBloc(auth: Provider.of<AuthBase>(context)),
+      dispose: (context, SignInBloc bloc) => bloc.dispose(),
+      child: Consumer<SignInBloc>(
+        builder: (context, bloc, _) => SignInPage(bloc),
       ),
     );
   }
@@ -87,16 +81,19 @@ class SignInPage extends StatelessWidget {
           title: Text('Time Tracker'),
           //shadow effect  //default value is 4.0
           elevation: 2.0),
-      body: _buildContent(
-        context: context,
-        isLoading: Provider.of<ValueNotifier<bool>>(context).value,
-      ),
+      body: StreamBuilder<bool>(
+          stream: signInBloc.getLoadingStream,
+          //Tip : provide initialData if there is sensible initial value
+          initialData: false,
+          builder: (context, snapshot) {
+            return _buildContent(context, snapshot.data);
+          }),
       //shade-as we want
       backgroundColor: Colors.grey[200],
     );
   }
 
-  Widget _buildContent({BuildContext context, bool isLoading}) {
+  Widget _buildContent(BuildContext context, bool isLoading) {
     return Padding(
       padding: EdgeInsets.all(16.0),
       //color: Colors.yellow,
