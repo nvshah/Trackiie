@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:time_tracker/screens/sign_in/models/email_sign_in_model.dart';
+import 'package:time_tracker/screens/sign_in/models/email_sign_in_bloc_model.dart';
 import 'package:time_tracker/services/auth.dart';
 
 class EmailSignInBloc {
@@ -8,11 +8,11 @@ class EmailSignInBloc {
 
   EmailSignInBloc({this.auth});
 
-  final StreamController<EmailSignInModel> _modelController =
-      StreamController<EmailSignInModel>();
-  Stream<EmailSignInModel> get modelStream => _modelController.stream;
+  final StreamController<EmailSignInBlocModel> _modelController =
+      StreamController<EmailSignInBlocModel>();
+  Stream<EmailSignInBlocModel> get modelStream => _modelController.stream;
   //To Keep track of latest model
-  var _model = EmailSignInModel();
+  var _model = EmailSignInBlocModel();
 
   ///Update current model
   void updateModelWith({

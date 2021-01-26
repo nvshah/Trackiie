@@ -5,8 +5,8 @@ import 'package:provider/provider.dart';
 import 'package:time_tracker/screens/sign_in/sign_in_buttons.dart';
 import 'package:time_tracker/services/auth.dart';
 import 'package:time_tracker/widgets/platform_exception_alert_dialog.dart';
-import './utils/validators.dart';
-import 'package:time_tracker/screens/sign_in/models/email_sign_in_model.dart';
+import 'utils/validators.dart';
+import 'package:time_tracker/screens/sign_in/models/email_sign_in_bloc_model.dart';
 
 class EmailSignInForm extends StatefulWidget with EmailAndPasswordValidators {
   @override

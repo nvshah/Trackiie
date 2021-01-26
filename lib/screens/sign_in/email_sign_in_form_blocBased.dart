@@ -5,8 +5,8 @@ import 'package:provider/provider.dart';
 import 'package:time_tracker/screens/sign_in/sign_in_buttons.dart';
 import 'package:time_tracker/services/auth.dart';
 import 'package:time_tracker/widgets/platform_exception_alert_dialog.dart';
-import 'package:time_tracker/screens/sign_in/models/email_sign_in_model.dart';
-import 'package:time_tracker/screens/sign_in/business_logic/email_signin_bloc.dart';
+import 'package:time_tracker/screens/sign_in/models/email_sign_in_bloc_model.dart';
+import 'package:time_tracker/screens/sign_in/business_logic/email_sign_in_bloc.dart';
 
 class EmailSignInForm extends StatefulWidget {
   final EmailSignInBloc bloc;
@@ -76,7 +76,7 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
   }
 
   ///after user press next or enter from keyboard then decide what to do next
-  void _emailEditingComplete(EmailSignInModel model) {
+  void _emailEditingComplete(EmailSignInBlocModel model) {
     //When there is error and we press next/enter then stay on same field instead going next field
     final newFocus = model.emailValidator.isValid(model.email)
         ? _passwordFocusNode
@@ -84,7 +84,7 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
     FocusScope.of(context).requestFocus(newFocus);
   }
 
-  Widget _buildEmailInputField(EmailSignInModel model) {
+  Widget _buildEmailInputField(EmailSignInBlocModel model) {
     return TextField(
       controller: _emailTextController,
       decoration: InputDecoration(
@@ -105,7 +105,7 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
     );
   }
 
-  Widget _buildPasswordInputField(EmailSignInModel model) {
+  Widget _buildPasswordInputField(EmailSignInBlocModel model) {
     return TextField(
       controller: _passwordTextController,
       decoration: InputDecoration(
@@ -123,7 +123,7 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
     );
   }
 
-  List<Widget> _buildChildren(EmailSignInModel model) {
+  List<Widget> _buildChildren(EmailSignInBlocModel model) {
     return [
       //EMAIL
       _buildEmailInputField(model),
@@ -160,9 +160,9 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<EmailSignInModel>(
+    return StreamBuilder<EmailSignInBlocModel>(
         stream: widget.bloc.modelStream,
-        initialData: EmailSignInModel(),
+        initialData: EmailSignInBlocModel(),
         builder: (context, snapshot) {
           final model = snapshot.data;
           return Padding(

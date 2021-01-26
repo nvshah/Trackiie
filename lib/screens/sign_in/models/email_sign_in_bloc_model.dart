@@ -5,14 +5,14 @@ enum EmailSignInFormType {
   signup,
 }
 
-class EmailSignInModel with EmailAndPasswordValidators {
+class EmailSignInBlocModel with EmailAndPasswordValidators {
   final String email;
   final String password;
   final EmailSignInFormType formType;
   final bool isLoading;
   final bool isSubmitted;
 
-  EmailSignInModel({
+  EmailSignInBlocModel({
     this.email,
     this.password,
     this.formType = EmailSignInFormType.signin,
@@ -20,14 +20,14 @@ class EmailSignInModel with EmailAndPasswordValidators {
     this.isSubmitted = false,
   });
 
-  EmailSignInModel copyWith({
+  EmailSignInBlocModel copyWith({
     String email,
     String password,
     EmailSignInFormType formType,
     bool isLoading,
     bool isSubmitted,
   }) {
-    return EmailSignInModel(
+    return EmailSignInBlocModel(
       email: email ?? this.email,
       password: password ?? this.password,
       formType: formType ?? this.formType,
