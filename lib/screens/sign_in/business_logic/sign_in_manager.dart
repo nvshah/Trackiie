@@ -4,8 +4,8 @@ import 'package:flutter/foundation.dart';
 
 import 'package:time_tracker/services/auth.dart';
 
-class SignInBloc {
-  SignInBloc({
+class SignInManager {
+  SignInManager({
     @required this.auth,
     this.isLoading,
   });

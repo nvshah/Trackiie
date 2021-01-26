@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:time_tracker/screens/sign_in/business_logic/signin_bloc.dart';
 
 import 'package:time_tracker/screens/sign_in/email_sign_in_page.dart';
 import 'package:time_tracker/services/auth.dart';
 import 'package:time_tracker/widgets/platform_exception_alert_dialog.dart';
 import 'sign_in_buttons.dart';
+import 'package:time_tracker/screens/sign_in/business_logic/sign_in_manager.dart';
 
 class SignInPage extends StatelessWidget {
-  final SignInBloc signInBloc;
+  final SignInManager signInManager;
   final bool isLoading;
 
-  SignInPage({this.signInBloc, this.isLoading});
+  SignInPage({this.signInManager, this.isLoading});
 
   //TIP :- always create such kinda widget whenever you want bloc for spcific page
-  //here SignInBloc is always gona stick with SignInPage
+  //here SignInManager is always gona stick with SignInPage
   //with this convention widget will be created with things it requires to be configured
   static Widget create(BuildContext context) {
     return ChangeNotifierProvider<ValueNotifier<bool>>(
@@ -23,11 +23,15 @@ class SignInPage extends StatelessWidget {
       child: Consumer<ValueNotifier<bool>>(
         //this builder is called every time when isLoading.value changes i.e all descendents widgets are also rebuilt
         builder: (_, isLoading, __) => Provider(
-          create: (_) => SignInBloc(
-              auth: Provider.of<AuthBase>(context), isLoading: isLoading),
-          child: Consumer<SignInBloc>(
-            builder: (context, bloc, _) =>
-                SignInPage(signInBloc: bloc, isLoading: isLoading.value),
+          create: (_) => SignInManager(
+            auth: Provider.of<AuthBase>(context),
+            isLoading: isLoading,
+          ),
+          child: Consumer<SignInManager>(
+            builder: (context, manager, _) => SignInPage(
+              signInManager: manager,
+              isLoading: isLoading.value,
+            ),
           ),
         ),
       ),
@@ -47,7 +51,7 @@ class SignInPage extends StatelessWidget {
 
   Future<void> _signInAnonymously(BuildContext context) async {
     try {
-      await signInBloc.signInAnonymously();
+      await signInManager.signInAnonymously();
       //print('${authResult.user.uid}');
     } on PlatformException catch (e) {
       _showSignInError(e, context);
@@ -56,7 +60,7 @@ class SignInPage extends StatelessWidget {
 
   Future<void> _signInWithGoogle(BuildContext context) async {
     try {
-      await signInBloc.signInWithGoogle();
+      await signInManager.signInWithGoogle();
       //print('${authResult.user.uid}');
     } on PlatformException catch (e) {
       _showSignInError(e, context);
@@ -65,7 +69,7 @@ class SignInPage extends StatelessWidget {
 
   Future<void> _signInWithFacebook(BuildContext context) async {
     try {
-      await signInBloc.signInWithFB();
+      await signInManager.signInWithFB();
       //print('${authResult.user.uid}');
     } on PlatformException catch (e) {
       _showSignInError(e, context);
