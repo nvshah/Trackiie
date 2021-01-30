@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:time_tracker/screens/sign_in/models/email_sign_in_change_notifier_model.dart';
 
 import 'package:time_tracker/screens/sign_in/sign_in_buttons.dart';
 import 'package:time_tracker/services/auth.dart';
@@ -9,16 +10,16 @@ import 'package:time_tracker/screens/sign_in/models/email_sign_in_bloc_model.dar
 import 'package:time_tracker/screens/sign_in/business_logic/email_sign_in_bloc.dart';
 
 class EmailSignInForm extends StatefulWidget {
-  final EmailSignInBloc bloc;
-  EmailSignInForm(this.bloc);
+  final EmailSignInChangeNotifierModel model;
+  EmailSignInForm(this.model);
 
   //Inorder to accomodate BLOC
   static Widget create(BuildContext context) {
-    return Provider<EmailSignInBloc>(
-      create: (_) => EmailSignInBloc(auth: Provider.of<AuthBase>(context)),
-      dispose: (context, bloc) => bloc.close(),
-      child: Consumer<EmailSignInBloc>(
-        builder: (ctxt, bloc, _) => EmailSignInForm(bloc),
+    return ChangeNotifierProvider<EmailSignInChangeNotifierModel>(
+      create: (_) =>
+          EmailSignInChangeNotifierModel(auth: Provider.of<AuthBase>(context)),
+      child: Consumer<EmailSignInChangeNotifierModel>(
+        builder: (ctxt, model, _) => EmailSignInForm(model),
       ),
     );
   }
@@ -34,6 +35,8 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
   final _passwordTextController = TextEditingController();
   final _emailFocusNode = FocusNode();
   final _passwordFocusNode = FocusNode();
+
+  EmailSignInChangeNotifierModel get model => widget.model;
 
   @override
   void initState() {
@@ -53,7 +56,7 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
   //Submit Form details
   void _submit() async {
     try {
-      await widget.bloc.submit();
+      await model.submit();
       //IF Sign In or Register is Succesfully done then dismiss the screen automatically
       Navigator.of(context).pop();
     } on PlatformException catch (e) {
@@ -70,13 +73,13 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
     //Reset form data
     //NOTE : We must sync val between TextEditingController & Model of bloc i.e
     //       Every time we clear text we must also clear value in our model
-    widget.bloc.toogleFormType();
+    model.toogleFormType();
     _emailTextController.clear();
     _passwordTextController.clear();
   }
 
   ///after user press next or enter from keyboard then decide what to do next
-  void _emailEditingComplete(EmailSignInBlocModel model) {
+  void _emailEditingComplete() {
     //When there is error and we press next/enter then stay on same field instead going next field
     final newFocus = model.emailValidator.isValid(model.email)
         ? _passwordFocusNode
@@ -84,7 +87,7 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
     FocusScope.of(context).requestFocus(newFocus);
   }
 
-  Widget _buildEmailInputField(EmailSignInBlocModel model) {
+  Widget _buildEmailInputField() {
     return TextField(
       controller: _emailTextController,
       decoration: InputDecoration(
@@ -99,13 +102,13 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
       focusNode: _emailFocusNode,
       //When we press enter or complete entering text& enter next button from keyboard
       //Move focus to password field
-      onEditingComplete: () => _emailEditingComplete(model),
-      onChanged: widget
-          .bloc.updateEmail, //Widget rebuild != Widget render (widget redrawn)
+      onEditingComplete: () => _emailEditingComplete(),
+      onChanged:
+          model.updateEmail, //Widget rebuild != Widget render (widget redrawn)
     );
   }
 
-  Widget _buildPasswordInputField(EmailSignInBlocModel model) {
+  Widget _buildPasswordInputField() {
     return TextField(
       controller: _passwordTextController,
       decoration: InputDecoration(
@@ -118,20 +121,20 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
       textInputAction: TextInputAction.done,
       onEditingComplete:
           _submit, //Submit form once password field is completed on taking inputs
-      onChanged: widget.bloc
+      onChanged: model
           .updatePassword, //Widget rebuild != Widget render (widget redrawn)
     );
   }
 
-  List<Widget> _buildChildren(EmailSignInBlocModel model) {
+  List<Widget> _buildChildren() {
     return [
       //EMAIL
-      _buildEmailInputField(model),
+      _buildEmailInputField(),
       const SizedBox(
         height: 8.0,
       ),
       //PASSWORD
-      _buildPasswordInputField(model),
+      _buildPasswordInputField(),
       const SizedBox(
         height: 8.0,
       ),
@@ -160,19 +163,13 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<EmailSignInBlocModel>(
-        stream: widget.bloc.modelStream,
-        initialData: EmailSignInBlocModel(),
-        builder: (context, snapshot) {
-          final model = snapshot.data;
-          return Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              mainAxisSize: MainAxisSize.min,
-              children: _buildChildren(model),
-            ),
-          );
-        });
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.min,
+        children: _buildChildren(),
+      ),
+    );
   }
 }
