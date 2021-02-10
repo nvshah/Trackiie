@@ -22,6 +22,7 @@ class PlatformExceptionAlertDialog extends PlatformAlertDialog {
 
   static Map<String, String> _errors = {
     'ERROR_WRONG_PASSWORD': "The password is invalid !",
+    'Error 7': 'Missing or insufficient permissions',
 
     ///   • `ERROR_WEAK_PASSWORD` - If the password is not strong enough.
     ///   • `ERROR_INVALID_EMAIL` - If the email address is malformed.
