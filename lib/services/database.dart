@@ -1,4 +1,4 @@
-import 'package:time_tracker/app/home/models/task_model.dart';
+import 'package:time_tracker/app/home/tasks/models/task_model.dart';
 import 'package:time_tracker/services/api_data.dart';
 import 'package:time_tracker/services/firestore_service.dart';
 

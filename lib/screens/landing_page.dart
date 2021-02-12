@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:time_tracker/services/database.dart';
 
 import './sign_in/sign_in_page.dart';
-import './home_page.dart';
 import '../services/auth.dart';
+import 'package:time_tracker/app/home/tasks/screens/tasks_page.dart';
 
 class LandingPage extends StatelessWidget {
   @override
@@ -20,7 +21,10 @@ class LandingPage extends StatelessWidget {
             return SignInPage.create(
                 context); // create page with all configurations needed (i.e bloc)
           }
-          return HomePage();
+          return Provider<Database>(
+            create: (_) => FireStoreDatabase(uid: user.uid),
+            child: TasksPage(),
+          );
         } else {
           //Loading... For 1st time it may take a while while communicating with the firebase server
           return Scaffold(
