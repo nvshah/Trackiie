@@ -13,10 +13,12 @@ class FireStoreDatabase extends Database {
 
   final fireStoreService = FireStoreService.I;
 
+  String get _getDocumentId => DateTime.now().toIso8601String();
+
   ///Create task document for user in FireStore
   @override
   Future<void> createTask(Task data) async => fireStoreService.setData(
-      path: ApiData.pathToTask(uid, 'job_abc'), data: data.toMap());
+      path: ApiData.pathToTask(uid, _getDocumentId), data: data.toMap());
   //location where we want to write in firestore
 
   ///Get Stream of task from collection -> tasks under userDoc from Firestore
