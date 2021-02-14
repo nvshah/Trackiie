@@ -13,16 +13,20 @@ class FireStoreService {
   }
 
   ///Helper method on Generic type T : provider stream of T doc from collection at given path
+  ///path - path to collection
+  ///builder - get data & docId for each document present in collection at moment
   Stream<List<T>> collectionStream<T>({
     @required String path,
-    @required T builder(Map<String, dynamic> data),
+    @required T builder(String id, Map<String, dynamic> data),
   }) {
     //collection path
     final ref = Firestore.instance.collection(path);
     final snaps = ref.snapshots(); //snapshot of collections
     return snaps.map(
       //snap of collection at given time in firestore
-      (snap) => snap.documents.map((doc) => builder(doc.data)).toList(),
+      (snap) => snap.documents
+          .map((doc) => builder(doc.documentID, doc.data))
+          .toList(),
     );
   }
 }

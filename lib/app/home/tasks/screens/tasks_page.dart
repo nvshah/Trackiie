@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+
 import 'package:provider/provider.dart';
-import 'package:time_tracker/app/home/tasks/screens/add_task_page.dart';
+import 'package:time_tracker/app/home/tasks/screens/task_details_page.dart';
+import 'package:time_tracker/app/home/tasks/widgets/task_list_tile.dart';
 
 import 'package:time_tracker/services/auth.dart';
 import 'package:time_tracker/services/database.dart';
 import 'package:time_tracker/widgets/platform_alert_dialog.dart';
-import 'package:time_tracker/widgets/platform_exception_alert_dialog.dart';
+
 import 'package:time_tracker/app/home/tasks/models/task_model.dart';
 
 class TasksPage extends StatelessWidget {
@@ -34,18 +35,18 @@ class TasksPage extends StatelessWidget {
     }
   }
 
-  void _createTask(BuildContext ctxt) {
-    try {
-      final db = Provider.of<Database>(ctxt);
-      db.createTask(Task(
-        name: 'Gaming',
-        ratePerHour: 20,
-      ));
-    } on PlatformException catch (e) {
-      PlatformExceptionAlertDialog(title: 'Operation Failed', exception: e)
-          .show(ctxt);
-    }
-  }
+  // void _createTask(BuildContext ctxt) {
+  //   try {
+  //     final db = Provider.of<Database>(ctxt);
+  //     db.createTask(Task(
+  //       name: 'Gaming',
+  //       ratePerHour: 20,
+  //     ));
+  //   } on PlatformException catch (e) {
+  //     PlatformExceptionAlertDialog(title: 'Operation Failed', exception: e)
+  //         .show(ctxt);
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -62,8 +63,9 @@ class TasksPage extends StatelessWidget {
         ],
       ),
       body: _buildBody(context),
+      //NEW TASK
       floatingActionButton: FloatingActionButton(
-        onPressed: () => AddTaskPage.show(context),
+        onPressed: () => TaskDetailsPage.show(context),
         child: Icon(Icons.add),
       ),
     );
@@ -76,7 +78,15 @@ class TasksPage extends StatelessWidget {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             final tasks = snapshot.data;
-            final children = tasks.map((t) => Text('')).toList();
+            final children = tasks
+                .map(
+                  (t) => TaskListLitle(
+                    task: t,
+                    onTap: () =>
+                        TaskDetailsPage.show(context, task: t), //edit task
+                  ),
+                )
+                .toList();
             return ListView(
               children: children,
             );
