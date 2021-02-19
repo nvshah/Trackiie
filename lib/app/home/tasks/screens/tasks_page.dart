@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
-
 import 'package:provider/provider.dart';
-import 'package:time_tracker/app/home/tasks/screens/task_details_page.dart';
 
-import 'package:time_tracker/app/home/tasks/widgets/list_items_builder.dart';
-import 'package:time_tracker/app/home/tasks/widgets/task_list_tile.dart';
-
-import 'package:time_tracker/services/auth.dart';
-import 'package:time_tracker/services/database.dart';
-import 'package:time_tracker/widgets/platform_alert_dialog.dart';
-
-import 'package:time_tracker/app/home/tasks/models/task_model.dart';
+import '../../../../services/auth.dart';
+import '../../../../services/database.dart';
+import '../../../../widgets/platform_alert_dialog.dart';
+import '../models/task_model.dart';
+import '../widgets/list_items_builder.dart';
+import '../widgets/task_list_tile.dart';
+import 'task_details_page.dart';
 
 class TasksPage extends StatelessWidget {
   Future<void> _signOut(BuildContext context) async {
