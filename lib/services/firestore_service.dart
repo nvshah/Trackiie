@@ -6,10 +6,20 @@ class FireStoreService {
   static final FireStoreService I = FireStoreService._();
 
   ///Set document data at specified collection path
-  Future<void> setData({String path, Map<String, dynamic> data}) async {
+  Future<void> setData({
+    @required String path,
+    @required Map<String, dynamic> data,
+  }) async {
     final ref = Firestore.instance.document(path);
     print('$path: $data'); //logging purpose
     await ref.setData(data);
+  }
+
+  ///Delete document data at specified collection path
+  Future<void> deleteData({@required String path}) async {
+    final ref = Firestore.instance.document(path);
+    print('delete: $path'); //logging purpose
+    await ref.delete();
   }
 
   ///Helper method on Generic type T : provider stream of T doc from collection at given path

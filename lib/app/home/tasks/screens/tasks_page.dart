@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:time_tracker/widgets/platform_exception_alert_dialog.dart';
 
 import '../../../../services/auth.dart';
 import '../../../../services/database.dart';
@@ -47,6 +49,18 @@ class TasksPage extends StatelessWidget {
   //   }
   // }
 
+  Future<void> _deleteHandler(BuildContext context, Task task) async {
+    try {
+      final db = Provider.of<Database>(context);
+      await db.deleteTask(task);
+    } on PlatformException catch (e) {
+      PlatformExceptionAlertDialog(
+        title: 'Operation failed',
+        exception: e,
+      ).show(context);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -77,9 +91,16 @@ class TasksPage extends StatelessWidget {
         builder: (context, snapshot) {
           return ListItemsBuilder<Task>(
             snapshot: snapshot,
-            itemBuilder: (context, task) => TaskListLitle(
-              task: task,
-              onTap: () => TaskDetailsPage.show(context, task: task),
+            itemBuilder: (context, task) => Dismissible(
+              //key is required while using Dismissible
+              key: Key('task_${task.id}'), //key must be unique
+              background: Container(color: Colors.red),
+              direction: DismissDirection.endToStart,
+              onDismissed: (_) => _deleteHandler(context, task),
+              child: TaskListLitle(
+                task: task,
+                onTap: () => TaskDetailsPage.show(context, task: task),
+              ),
             ),
           );
         });

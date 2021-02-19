@@ -1,15 +1,18 @@
-import 'package:time_tracker/app/home/tasks/models/task_model.dart';
-import 'package:time_tracker/services/api_data.dart';
-import 'package:time_tracker/services/firestore_service.dart';
+import 'package:flutter/material.dart';
+
+import '../app/home/tasks/models/task_model.dart';
+import 'api_data.dart';
+import 'firestore_service.dart';
 
 abstract class Database {
   Stream<List<Task>> tasksStream();
   Future<void> setTask(Task task);
+  Future<void> deleteTask(Task task);
 }
 
 class FireStoreDatabase extends Database {
   final String uid;
-  FireStoreDatabase({this.uid});
+  FireStoreDatabase({@required this.uid});
 
   final fireStoreService = FireStoreService.I;
 
@@ -29,5 +32,14 @@ class FireStoreDatabase extends Database {
           task.id ?? _getDocumentId,
         ), //location where we want to write in firestore
         data: task.toMap(),
+      );
+
+  //Delete Task
+  @override
+  Future<void> deleteTask(Task task) async => fireStoreService.deleteData(
+        path: ApiData.pathToTask(
+          uid,
+          task.id,
+        ), //location where we want to write in firestore
       );
 }
