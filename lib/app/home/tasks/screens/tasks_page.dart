@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
 import 'package:time_tracker/app/home/tasks/screens/task_details_page.dart';
-import 'package:time_tracker/app/home/tasks/widgets/empty_content.dart';
+
+import 'package:time_tracker/app/home/tasks/widgets/list_items_builder.dart';
 import 'package:time_tracker/app/home/tasks/widgets/task_list_tile.dart';
 
 import 'package:time_tracker/services/auth.dart';
@@ -77,30 +78,13 @@ class TasksPage extends StatelessWidget {
     return StreamBuilder<List<Task>>(
         stream: db.tasksStream(),
         builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            final tasks = snapshot.data;
-            //Empty Content
-            if (tasks.isEmpty) {
-              return EmptyContent();
-            }
-            final children = tasks
-                .map(
-                  (t) => TaskListLitle(
-                    task: t,
-                    onTap: () =>
-                        TaskDetailsPage.show(context, task: t), //edit task
-                  ),
-                )
-                .toList();
-            return ListView(
-              children: children,
-            );
-          } else if (snapshot.hasError) {
-            return Center(
-              child: Text('Some Error Occured'),
-            );
-          }
-          return Center(child: CircularProgressIndicator());
+          return ListItemsBuilder<Task>(
+            snapshot: snapshot,
+            itemBuilder: (context, task) => TaskListLitle(
+              task: task,
+              onTap: () => TaskDetailsPage.show(context, task: task),
+            ),
+          );
         });
   }
 }
