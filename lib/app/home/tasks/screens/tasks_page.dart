@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
 import 'package:time_tracker/app/home/tasks/screens/task_details_page.dart';
+import 'package:time_tracker/app/home/tasks/widgets/empty_content.dart';
 import 'package:time_tracker/app/home/tasks/widgets/task_list_tile.dart';
 
 import 'package:time_tracker/services/auth.dart';
@@ -78,6 +79,10 @@ class TasksPage extends StatelessWidget {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             final tasks = snapshot.data;
+            //Empty Content
+            if (tasks.isEmpty) {
+              return EmptyContent();
+            }
             final children = tasks
                 .map(
                   (t) => TaskListLitle(
