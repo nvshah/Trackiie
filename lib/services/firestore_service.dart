@@ -28,15 +28,43 @@ class FireStoreService {
   Stream<List<T>> collectionStream<T>({
     @required String path,
     @required T builder(String id, Map<String, dynamic> data),
+    Query queryBuilder(Query query),
+    int sort(T lhs, T rhs),
   }) {
     //collection path
-    final ref = Firestore.instance.collection(path);
-    final snaps = ref.snapshots(); //snapshot of collections
-    return snaps.map(
+    Query query = Firestore.instance.collection(path);
+    if (queryBuilder != null) {
+      query = queryBuilder(query);
+    }
+    // final ref = Firestore.instance.collection(path);
+    final snaps = query.snapshots(); //snapshot of collections
+    return snaps.map((snap) {
       //snap of collection at given time in firestore
-      (snap) => snap.documents
+      final result = snap.documents
           .map((doc) => builder(doc.documentID, doc.data))
-          .toList(),
-    );
+          .where((value) => value != null)
+          .toList();
+      if (sort != null) {
+        result.sort(sort);
+      }
+      return result;
+    });
+  }
+
+  Stream<T> documentStream<T>({
+    @required
+        String path,
+    @required
+        T builder(
+      String documentID,
+      Map<String, dynamic> data,
+    ),
+  }) {
+    final DocumentReference reference = Firestore.instance.document(path);
+    final Stream<DocumentSnapshot> snapshots = reference.snapshots();
+    return snapshots.map((snapshot) => builder(
+          snapshot.documentID,
+          snapshot.data,
+        ));
   }
 }
