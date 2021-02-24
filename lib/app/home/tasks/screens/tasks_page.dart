@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:time_tracker/app/home/tasks/screens/task_entries_page.dart';
 import 'package:time_tracker/widgets/platform_exception_alert_dialog.dart';
 
 import '../../../../services/auth.dart';
@@ -78,7 +79,10 @@ class TasksPage extends StatelessWidget {
       body: _buildBody(context),
       //NEW TASK
       floatingActionButton: FloatingActionButton(
-        onPressed: () => TaskDetailsPage.show(context),
+        onPressed: () => TaskDetailsPage.show(
+          context,
+          Provider.of<Database>(context),
+        ),
         child: Icon(Icons.add),
       ),
     );
@@ -99,7 +103,7 @@ class TasksPage extends StatelessWidget {
               onDismissed: (_) => _deleteHandler(context, task),
               child: TaskListLitle(
                 task: task,
-                onTap: () => TaskDetailsPage.show(context, task: task),
+                onTap: () => TaskEntriesPage.show(context, task),
               ),
             ),
           );

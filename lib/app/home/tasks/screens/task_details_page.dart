@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
+
 import 'package:time_tracker/app/home/tasks/models/task_model.dart';
 import 'package:time_tracker/services/database.dart';
 import 'package:time_tracker/widgets/platform_alert_dialog.dart';
@@ -13,8 +13,9 @@ class TaskDetailsPage extends StatefulWidget {
   TaskDetailsPage({Key key, @required this.db, this.task}) : super(key: key);
 
   ///this method will do all stuff from getting navigator & pushing itself on Page stack
-  static Future<void> show(BuildContext context, {Task task}) async {
-    final db = Provider.of<Database>(context);
+  static Future<void> show(BuildContext context, Database db,
+      {Task task}) async {
+    //final db = Provider.of<Database>(context);
     await Navigator.of(context).push(MaterialPageRoute(
       builder: (_) => TaskDetailsPage(
         db: db,
@@ -25,10 +26,10 @@ class TaskDetailsPage extends StatefulWidget {
   }
 
   @override
-  _AddTaskPageState createState() => _AddTaskPageState();
+  _TaskDetailsPageState createState() => _TaskDetailsPageState();
 }
 
-class _AddTaskPageState extends State<TaskDetailsPage> {
+class _TaskDetailsPageState extends State<TaskDetailsPage> {
   final _formKey = GlobalKey<FormState>();
   String _name;
   int _rate;
