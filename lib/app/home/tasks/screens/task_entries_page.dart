@@ -22,6 +22,8 @@ class TaskEntriesPage extends StatelessWidget {
 
   static Future<void> show(BuildContext context, Task task) async {
     final Database database = Provider.of<Database>(context);
+    //NOTE : here Navigator of HomePage is referred
+    // and when we pop this page in view default behaviour of back button must be restored
     await Navigator.of(context).push(
       //For parallex effect
       CupertinoPageRoute(
