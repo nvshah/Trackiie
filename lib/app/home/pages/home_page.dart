@@ -27,7 +27,12 @@ class _HomePageState extends State<HomePage> {
       };
 
   void _select(TabItem item) {
-    if (item == _currentTab) return;
+    //Pop-To-Root (user experience)
+    if (item == _currentTab) {
+      _navigatorKeys[_currentTab]
+          .currentState
+          .popUntil((route) => route.isFirst);
+    }
     setState(() {
       _currentTab = item;
     });
