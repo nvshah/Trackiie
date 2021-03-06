@@ -43,6 +43,7 @@ class TaskEntriesPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    //inorder to update task details back & Forth reactively
     return StreamBuilder<Task>(
         stream: database.taskStream(task.id),
         builder: (context, snapshot) {
@@ -52,23 +53,33 @@ class TaskEntriesPage extends StatelessWidget {
             appBar: AppBar(
               elevation: 2.0,
               title: Text(taskName),
+              centerTitle: true,
               actions: <Widget>[
+                //EDIT ENTRY
                 IconButton(
                   icon: Icon(
                     Icons.edit,
+                    color: Colors.white,
                     //size: 18,
                   ),
                   onPressed: () =>
                       TaskDetailsPage.show(context, database, task: task),
                 ),
+                //NEW ENTRY
+                IconButton(
+                  icon: Icon(
+                    Icons.add,
+                    color: Colors.white,
+                  ),
+                  onPressed: () => EntryPage.show(
+                    context: context,
+                    database: database,
+                    task: task,
+                  ),
+                ),
               ],
             ),
             body: _buildContent(context, task),
-            floatingActionButton: FloatingActionButton(
-              child: Icon(Icons.add),
-              onPressed: () => EntryPage.show(
-                  context: context, database: database, task: task),
-            ),
           );
         });
   }

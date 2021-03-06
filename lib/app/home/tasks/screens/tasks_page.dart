@@ -68,23 +68,28 @@ class TasksPage extends StatelessWidget {
       appBar: AppBar(
         title: Text('Tasks'),
         actions: <Widget>[
+          //NEW TASK
+          IconButton(
+            icon: Icon(
+              Icons.add,
+              color: Colors.white,
+            ),
+            onPressed: () => TaskDetailsPage.show(
+              context,
+              Provider.of<Database>(context),
+            ),
+          ),
+          //LOGOUT
           IconButton(
             icon: Icon(
               Icons.exit_to_app,
+              color: Colors.white,
             ),
             onPressed: () => _confirmSignout(context),
           ),
         ],
       ),
       body: _buildBody(context),
-      //NEW TASK
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => TaskDetailsPage.show(
-          context,
-          Provider.of<Database>(context),
-        ),
-        child: Icon(Icons.add),
-      ),
     );
   }
 
