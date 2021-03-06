@@ -23,7 +23,8 @@ class TaskEntriesPage extends StatelessWidget {
   static Future<void> show(BuildContext context, Task task) async {
     final Database database = Provider.of<Database>(context);
     await Navigator.of(context).push(
-      MaterialPageRoute(
+      //For parallex effect
+      CupertinoPageRoute(
         fullscreenDialog: false, //page sliding from right & back button on ios
         builder: (context) => TaskEntriesPage(database: database, task: task),
       ),
