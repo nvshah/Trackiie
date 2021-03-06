@@ -16,7 +16,8 @@ class TaskDetailsPage extends StatefulWidget {
   static Future<void> show(BuildContext context, Database db,
       {Task task}) async {
     //final db = Provider.of<Database>(context);
-    await Navigator.of(context).push(MaterialPageRoute(
+    // forcing to use rootNavigator as if not then Tabs will appear while for this screen as well which we don't want.
+    await Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
       builder: (_) => TaskDetailsPage(
         db: db,
         task: task,

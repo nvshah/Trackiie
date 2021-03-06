@@ -16,7 +16,9 @@ class EntryPage extends StatefulWidget {
 
   static Future<void> show(
       {BuildContext context, Database database, Task task, Entry entry}) async {
-    await Navigator.of(context).push(
+    //As we want full screen page & not tab bar at bottom for this page so using rootNavigator instead of
+    //navigator provided by CupertinoTabScaffold
+    await Navigator.of(context, rootNavigator: true).push(
       MaterialPageRoute(
         builder: (context) =>
             EntryPage(database: database, task: task, entry: entry),

@@ -9,7 +9,9 @@ import '../services/auth.dart';
 class LandingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final auth = Provider.of<AuthBase>(context);
+    //Avoid rebuilding of landing page when Navigation stack changes
+    //So not listening to the parents
+    final auth = Provider.of<AuthBase>(context, listen: false);
     return StreamBuilder<User>(
       stream: auth.onAuthStateChanged,
       builder: (ctxt, snapshot) {
