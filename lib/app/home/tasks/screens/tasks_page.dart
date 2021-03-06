@@ -4,39 +4,13 @@ import 'package:provider/provider.dart';
 import 'package:time_tracker/app/home/tasks/screens/task_entries_page.dart';
 import 'package:time_tracker/widgets/platform_exception_alert_dialog.dart';
 
-import '../../../../services/auth.dart';
 import '../../../../services/database.dart';
-import '../../../../widgets/platform_alert_dialog.dart';
 import '../models/task_model.dart';
 import '../widgets/list_items_builder.dart';
 import '../widgets/task_list_tile.dart';
 import 'task_details_page.dart';
 
 class TasksPage extends StatelessWidget {
-  Future<void> _signOut(BuildContext context) async {
-    try {
-      final auth = Provider.of<AuthBase>(context);
-      await auth.signOut();
-    } catch (e) {
-      print(e.toString());
-    }
-  }
-
-  ///Takes consent from user for sign out
-  Future<void> _confirmSignout(BuildContext context) async {
-    final doSignOut = await PlatformAlertDialog(
-      title: 'Logout',
-      content: 'Are you sure ?',
-      defaultActionText: 'Logout',
-      cancelActionText: 'Cancel',
-    ).show(context);
-
-    //perfrom logout
-    if (doSignOut == true) {
-      _signOut(context);
-    }
-  }
-
   // void _createTask(BuildContext ctxt) {
   //   try {
   //     final db = Provider.of<Database>(ctxt);
@@ -78,14 +52,6 @@ class TasksPage extends StatelessWidget {
               context,
               Provider.of<Database>(context),
             ),
-          ),
-          //LOGOUT
-          IconButton(
-            icon: Icon(
-              Icons.exit_to_app,
-              color: Colors.white,
-            ),
-            onPressed: () => _confirmSignout(context),
           ),
         ],
       ),
