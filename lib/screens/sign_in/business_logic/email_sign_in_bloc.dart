@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:rxdart/rxdart.dart';
 import 'package:time_tracker/screens/sign_in/models/email_sign_in_bloc_model.dart';
 import 'package:time_tracker/services/auth.dart';
 
@@ -8,11 +9,18 @@ class EmailSignInBloc {
 
   EmailSignInBloc({this.auth});
 
-  final StreamController<EmailSignInBlocModel> _modelController =
-      StreamController<EmailSignInBlocModel>();
-  Stream<EmailSignInBlocModel> get modelStream => _modelController.stream;
+  final _modelSubject =
+      BehaviorSubject<EmailSignInBlocModel>.seeded(EmailSignInBlocModel());
+
+  // final StreamController<EmailSignInBlocModel> _modelController =
+  //     StreamController<EmailSignInBlocModel>();
+  // Stream<EmailSignInBlocModel> get modelStream => _modelController.stream;
+
+  Stream<EmailSignInBlocModel> get modelStream => _modelSubject.stream;
+
   //To Keep track of latest model
-  var _model = EmailSignInBlocModel();
+  //with BehaviourSubject we can get most recent value of stream, asynchrnously
+  EmailSignInBlocModel get _model => _modelSubject.value;
 
   ///Update current model
   void updateModelWith({
@@ -22,16 +30,15 @@ class EmailSignInBloc {
     bool isLoading,
     bool isSubmitted,
   }) {
-    //Update Model
-    _model.copyWith(
+    //Update Model latest value is itself stored in BehaviourSubject itself
+    //Equi = adding the value to stream
+    _modelSubject.value = _model.copyWith(
       email: email,
       password: password,
       formType: formType,
       isLoading: isLoading,
       isSubmitted: isSubmitted,
     );
-    // Add model to stream
-    _modelController.add(_model);
   }
 
   //Submit Form details
@@ -74,6 +81,6 @@ class EmailSignInBloc {
   }
 
   void close() {
-    _modelController.close();
+    _modelSubject.close();
   }
 }
