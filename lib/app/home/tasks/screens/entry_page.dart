@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:time_tracker/widgets/date_time_picker.dart';
-import 'package:time_tracker/app/home/tasks/utils/format.dart';
+import 'package:time_tracker/utils/format.dart';
 import 'package:time_tracker/app/home/tasks/models/entry.dart';
 import 'package:time_tracker/app/home/tasks/models/task_model.dart';
 import 'package:time_tracker/services/database.dart';
@@ -61,7 +61,7 @@ class _EntryPageState extends State<EntryPage> {
     final id = widget.entry?.id;
     return Entry(
       id: id,
-      jobId: widget.task.id,
+      taskId: widget.task.id,
       start: start,
       end: end,
       comment: _comment,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:time_tracker/app/home/account/pages/account_page.dart';
+import 'package:time_tracker/app/home/entries/pages/entries_page.dart';
 import 'package:time_tracker/app/home/tasks/screens/tasks_page.dart';
 import 'package:time_tracker/app/home/widgets/cupertino_home_scaffold.dart';
 import 'package:time_tracker/app/home/widgets/tab_item.dart';
@@ -22,7 +23,7 @@ class _HomePageState extends State<HomePage> {
   //Bottom navigation mappings
   Map<TabItem, WidgetBuilder> get _widgetBuilders => {
         TabItem.tasks: (_) => TasksPage(),
-        TabItem.entries: (_) => Container(),
+        TabItem.entries: (_) => EntriesPage.create(context),
         TabItem.account: (_) => AccountPage(),
       };
 
