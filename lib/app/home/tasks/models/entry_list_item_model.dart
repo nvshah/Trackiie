@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:time_tracker/app/home/tasks/utils/format.dart';
+import 'package:time_tracker/utils/format.dart';
 import 'package:time_tracker/app/home/tasks/models/entry.dart';
 import 'package:time_tracker/app/home/tasks/models/task_model.dart';
 

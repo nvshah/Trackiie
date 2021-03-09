@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:time_tracker/app/home/tasks/utils/format.dart';
+import 'package:time_tracker/utils/format.dart';
 import 'package:time_tracker/widgets/input_dropdown.dart';
 
 class DateTimePicker extends StatelessWidget {
