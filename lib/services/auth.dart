@@ -9,7 +9,13 @@ import 'package:google_sign_in/google_sign_in.dart';
 ///So we will refernce Auth class for User object only.
 class User {
   final String uid;
-  User({@required this.uid});
+  final String imageUrl;
+  final String name;
+  User({
+    @required this.uid,
+    @required this.imageUrl,
+    @required this.name,
+  });
 }
 
 ///To define the features of Public-Interface, we are defining abstract class
@@ -135,7 +141,13 @@ class Auth implements AuthBase {
 
   //custom modelling/ from remote structure
   User _userFromFirebaseUser(FirebaseUser firebaseUser) {
-    return firebaseUser == null ? null : User(uid: firebaseUser.uid);
+    return firebaseUser == null
+        ? null
+        : User(
+            uid: firebaseUser.uid,
+            imageUrl: firebaseUser.photoUrl,
+            name: firebaseUser.displayName,
+          );
   }
 
   //Useful to react when user signs in or signs out - without taking help from landing-page & doing some call-back there

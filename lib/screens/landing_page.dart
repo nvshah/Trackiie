@@ -24,9 +24,12 @@ class LandingPage extends StatelessWidget {
                 context); // create page with all configurations needed (i.e bloc)
           }
           //already signed in then to home Page
-          return Provider<Database>(
-            create: (_) => FireStoreDatabase(uid: user.uid),
-            child: HomePage(),
+          return Provider<User>.value(
+            value: user,
+            child: Provider<Database>(
+              create: (_) => FireStoreDatabase(uid: user.uid),
+              child: HomePage(),
+            ),
           );
         } else {
           //Loading... For 1st time it may take a while while communicating with the firebase server

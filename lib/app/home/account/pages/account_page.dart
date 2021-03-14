@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:time_tracker/app/home/account/widgets/avatar.dart';
 
 import 'package:time_tracker/services/auth.dart';
 
@@ -24,14 +25,36 @@ class AccountPage extends StatelessWidget {
       cancelActionText: 'Cancel',
     ).show(context);
 
-    //perfrom logout
+    //perform logout
     if (doSignOut == true) {
       _signOut(context);
     }
   }
 
+  Widget _buildUserInfo(User user) => Column(
+        children: [
+          Avatar(
+            radius: 50,
+            imageUrl: user.imageUrl,
+            borderColor: Colors.black54,
+          ),
+          SizedBox(
+            height: 8,
+          ),
+          if (user.name != null)
+            Text(
+              user.name,
+              style: TextStyle(color: Colors.white),
+            ),
+          SizedBox(
+            height: 8,
+          ),
+        ],
+      );
+
   @override
   Widget build(BuildContext context) {
+    final user = Provider.of<User>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text('My Account'),
@@ -45,6 +68,11 @@ class AccountPage extends StatelessWidget {
             onPressed: () => _confirmSignout(context),
           ),
         ],
+        //ACCOUNT
+        bottom: PreferredSize(
+          preferredSize: Size.fromHeight(130),
+          child: _buildUserInfo(user),
+        ),
       ),
       body: Container(),
     );
