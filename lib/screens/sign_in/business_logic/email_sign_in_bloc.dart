@@ -19,7 +19,7 @@ class EmailSignInBloc {
   Stream<EmailSignInBlocModel> get modelStream => _modelSubject.stream;
 
   //To Keep track of latest model
-  //with BehaviourSubject we can get most recent value of stream, asynchrnously
+  //with BehaviourSubject we can get most recent value of stream, synchrnously
   EmailSignInBlocModel get _model => _modelSubject.value;
 
   ///Update current model

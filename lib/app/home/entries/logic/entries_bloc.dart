@@ -22,8 +22,9 @@ class EntriesBloc {
 
   static List<EntryTask> _entriesJobsCombiner(
       List<Entry> entries, List<Task> jobs) {
+    //Entries & Jobs may scattered differently so Combining all entries under respective Job accordingly
     return entries.map((entry) {
-      final job = jobs.firstWhere((job) => job.id == entry.taskId);
+      final job = jobs.firstWhere((task) => task.id == entry.taskId);
       return EntryTask(entry, job);
     }).toList();
   }
@@ -33,6 +34,10 @@ class EntriesBloc {
       _allEntriesStream.map(_createModels);
 
   static List<EntriesListTileModel> _createModels(List<EntryTask> allEntries) {
+    if (allEntries.isEmpty) {
+      return [];
+    }
+
     final allDailyJobsDetails = DailyTasksDetails.all(allEntries);
 
     // total duration across all jobs
